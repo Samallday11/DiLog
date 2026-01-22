@@ -1,198 +1,228 @@
 # DiLog — Diabetic Health Tracker App
-A comprehensive iOS application for diabetes tracking, analytics, and AI-powered recommendations.
+
+A cross-platform, healthcare-focused mobile application for diabetes tracking, analytics, and AI-powered recommendations.
 
 ---
 
 ## Project Overview
-DiLog is an iOS-based diabetic health tracking application designed to help individuals monitor and manage diabetes effectively. The system enables tracking of glucose levels, meals, medications, and daily activities while providing reminders and personalized AI-generated meal recommendations.
 
-The project follows industry-level software documentation practices, including SRS (Software Requirements Specification) and SDD (Software Design Document), with a focus on security, usability, and healthcare compliance (HIPAA/GDPR).
+**DiLog** is a cross-functional mobile application designed to help individuals with diabetes monitor, understand, and manage their condition more effectively. The application enables structured logging of glucose levels, meals, medications, and daily activities, combined with analytics and AI-driven meal recommendations to support informed decision-making.
+
+The project follows **industry-standard software engineering practices**, including formal **SRS (Software Requirements Specification)** and **SDD (Software Design Document)** artifacts. Special emphasis is placed on **security, scalability, usability, and healthcare data compliance** (HIPAA/GDPR-aligned design principles).
 
 ---
 
 ## Team Members
 
-| Name | Role |
-|------|------|
-| **Salih Mohamed** | Group Leader, API Development & Integration, Quality Assurance |
-| **Samuel Tilahun** | Backend Development, **API Development**, Database Design, and Cloud Control |
-| **Abdulhameed Ba Hakim** | Front-End Developer & UI/UX Design |
-| **Winnie Halm De-Souza** | Front-End Development & Documentation |
+| Name                     | Role                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| **Salih Mohamed**        | Group Leader, Backend Architecture, API Development & Integration, Quality Assurance |
+| **Samuel Tilahun**       | Backend Development, API Development, Database Design, Cloud Infrastructure          |
+| **Abdulhameed Ba Hakim** | Frontend Development, UI/UX Design                                                   |
+| **Winnie Halm De-Souza** | Frontend Development, Technical Documentation                                        |
 
 ---
 
 ## Key Features
-- **Glucose Monitoring** – Log glucose readings and view historical trends  
-- **Meal Tracking** – Log meals and nutritional data  
-- **Medication Management** – Set up reminders and track medication schedules  
-- **Activity Logging** – Track daily physical activity  
-- **AI Meal Recommendations** – Personalized suggestions based on patterns  
-- **Data Analytics** – Weekly and monthly charts with trend insights  
-- **Reports Export** – Generate PDF/CSV reports  
-- **Push Notifications** – Reminders for medications, glucose checks, and meals  
-- **User Profile System** – Manage preferences and health goals  
-- **HIPAA-Compliant Security Design** – Encrypted storage & secure data handling  
+
+* **Glucose Monitoring** – Log glucose readings and analyze historical trends
+* **Medication Management** – Schedule reminders and track adherence
+* **Meal Tracking** – Log meals with nutritional categorization
+* **AI Meal Recommendations** – Personalized suggestions based on user data patterns
+* **Activity Logging** – Track physical activity and lifestyle habits
+* **Data Analytics** – Weekly/monthly insights with visual dashboards
+* **Report Exporting** – Generate PDF and CSV reports for medical review
+* **Push Notifications** – Timely alerts for medications, meals, and glucose checks
+* **User Profile Management** – Health goals, preferences, and personalization
+* **Security-First Design** – Encrypted data handling and controlled access
 
 ---
 
 ## Tech Stack
 
-### Frontend
-- Swift  
-- SwiftUI  
-- Xcode  
-- iOS 17+  
-- Notification Framework  
-- (Future) Apple HealthKit  
+### Frontend (Mobile)
+
+* React Native (TypeScript)
+* iOS & Android support
+* Modular component-based UI
+* Push Notifications
+* (Planned) Apple HealthKit Integration
 
 ### Backend
-- Firebase Authentication  
-- Firebase Firestore  
-- Firebase Cloud Storage  
-- Firebase Cloud Functions  
-- REST API Endpoints  
-- CoreML (AI Meal Recommendation Engine)
+
+* Spring Boot (Java)
+* RESTful API Architecture
+* PostgreSQL Database
+* Firebase Authentication
+* Firebase Cloud Functions (Notifications & Triggers)
+* AI/ML Microservice (Python – TensorFlow / PyTorch)
 
 ### Tools & Standards
-- MVC / Modular Architecture  
-- ISO 8601 Date Format  
-- HIPAA + GDPR Privacy Standards  
+
+* Layered / Modular Architecture
+* ISO 8601 Date & Time Standards
+* Secure API Design (JWT / OAuth-based auth)
+* HIPAA & GDPR-aligned privacy practices
 
 ---
 
 ## System Architecture
 
 ```
-Presentation Layer (SwiftUI)
+Mobile Client (React Native)
         │
         ▼
-Application Logic (Modules)
+Backend API (Spring Boot)
         │
         ▼
-Cloud Backend (Firebase Auth, Firestore, Functions, Storage)
+Database (PostgreSQL)
+        │
+        ▼
+AI/ML Service (Python)
+        │
+        ▼
+Firebase Services (Auth, Notifications)
 ```
 
 ### Architecture Highlights
-- Three-layer modular design  
-- Secure communication using TLS  
-- Scalable API-driven backend  
-- Clear separation of concerns  
-- Encrypted data at rest and in transit  
+
+* Clear separation of concerns across layers
+* Scalable API-driven backend
+* Secure communication via TLS
+* Encrypted data at rest and in transit
+* Microservice-based AI integration
 
 ---
 
 ## System Modules
 
-### 1. Authentication & User Sessions
-- Secure login with Firebase Auth  
-- Token/session management  
-- Logout & timeout logic  
+### 1. Authentication & User Management
+
+* Firebase Authentication
+* Secure session/token handling
+* Role-based access control
 
 ### 2. Glucose Tracking Module
-- Add/view glucose logs  
-- Visualize patterns  
-- Alerts for abnormal levels  
 
-### 3. Meal Tracking Module
-- Log nutritional data  
-- Meal categorization  
-- AI-based meal suggestions  
+* Log and view glucose readings
+* Trend visualization
+* Alerts for abnormal ranges
 
-### 4. Medication Module
-- Scheduling and reminders  
-- Tracking adherence  
+### 3. Meal Tracking & AI Recommendations
 
-### 5. Activity Tracking Module
-- Track steps, workouts  
-- (Future) Integrate HealthKit  
+* Nutritional data logging
+* Pattern analysis
+* AI-powered meal suggestions
+
+### 4. Medication Management
+
+* Reminder scheduling
+* Adherence tracking
+
+### 5. Activity Tracking
+
+* Daily activity logging
+* (Future) HealthKit integration
 
 ### 6. Analytics & Reporting
-- Charts and summaries  
-- PDF/CSV export options  
+
+* Interactive charts and summaries
+* PDF/CSV export
 
 ### 7. Security & Compliance
-- Encrypted storage  
-- Controlled access permissions  
-- Healthcare privacy alignment  
 
-### 8. API Development (Backend Services)
-- REST API endpoints for all modules  
-- Input validation  
-- Middleware for authentication  
-- Firestore read/write operations  
-- API-level rate limiting  
-- Cloud Functions for backend logic  
+* Encrypted storage
+* Secure API access
+* Healthcare data privacy alignment
+
+### 8. Backend API Services
+
+* REST API endpoints for all modules
+* Input validation and sanitization
+* Authentication middleware
+* Rate limiting and error handling
+* Cloud Functions for background tasks
 
 ---
 
 ## Database Model (ERD Overview)
 
-Main entities include:
-- **User**
-- **MedicalRecord**
-- **ChatSession**
-- **Message**
-- **AIResponse**
+Core entities include:
 
-**Key Relationships**
-- One User → Many MedicalRecords  
-- One User → Many ChatSessions  
-- One ChatSession → Many Messages  
-- One Message → One AIResponse  
+* **User**
+* **MedicalRecord**
+* **MealLog**
+* **MedicationSchedule**
+* **ActivityLog**
+* **ChatSession**
+* **AIResponse**
+
+### Key Relationships
+
+* One User → Many MedicalRecords
+* One User → Many MealLogs
+* One User → Many MedicationSchedules
+* One User → Many ActivityLogs
+* One ChatSession → Many Messages
 
 ---
 
 ## Data Flow Summary
 
 ```
-User → iOS App → Firebase Auth/Firestore → AI Engine → App → User
+User → Mobile App → Backend API → Database / AI Service → Backend → App → User
 ```
 
-- Logs sent to Firestore  
-- AI module generates recommendations  
-- Firestore syncs results to app  
-- Reports generated in-app  
+* User logs stored securely in PostgreSQL
+* AI service processes anonymized data
+* Recommendations returned via API
+* Reports generated client-side or server-side
 
 ---
 
 ## Use Cases Overview
-- Register / Login  
-- Log glucose levels  
-- Log meals  
-- Set medication reminders  
-- View activity logs  
-- Receive AI recommendations  
-- Generate/export reports  
-- Manage user settings  
-- Offline-first logging  
+
+* User registration and authentication
+* Log glucose levels
+* Log meals and activities
+* Manage medication reminders
+* View analytics dashboards
+* Receive AI recommendations
+* Export health reports
+* Manage user settings
+* Offline-first data capture (planned)
 
 ---
 
-## Roadmap
+## Development Roadmap
 
 ### Phase 1 – MVP
-- Core logging features  
-- User authentication  
-- Basic dashboards  
+
+* Core health logging
+* Authentication
+* Basic dashboards
 
 ### Phase 2 – Intelligence
-- AI meal recommendations  
-- Predictive charts  
-- Enhanced analytics  
+
+* AI meal recommendations
+* Predictive analytics
+* Enhanced reporting
 
 ### Phase 3 – Integrations
-- HealthKit  
-- Barcode food scanner  
-- Apple Watch app  
 
-### Phase 4 – Advanced
-- Real-time alerting  
-- Caregiver access  
-- Doctor dashboard  
+* HealthKit
+* Barcode food scanner
+* Push notification optimization
+
+### Phase 4 – Advanced Features
+
+* Real-time alerts
+* Caregiver and clinician access
+* Administrative dashboards
 
 ---
 
-## Repository Structure (Early Stage)
+## Repository Structure
 
 ```
 DiLog/
@@ -202,8 +232,14 @@ DiLog/
 │   ├── architecture-diagram.png
 │   └── erd.png
 │
-│── src/
-│   └── (Swift files here)
+│── backend/
+│   └── spring-boot-service/
+│
+│── mobile/
+│   └── react-native-app/
+│
+│── ai-service/
+│   └── python-ml-service/
 │
 └── README.md
 ```
@@ -211,16 +247,18 @@ DiLog/
 ---
 
 ## Contribution Workflow
-- Use feature branches  
-- Submit pull requests  
-- Follow SRS/SDD-defined structure  
-- Document all architectural changes  
+
+* Feature-based branching strategy
+* Pull requests with reviews
+* Adherence to SRS/SDD guidelines
+* Mandatory documentation for architectural changes
 
 ---
 
 ## License
-This project is intended for academic and educational use.  
-A license will be added upon release.
+
+This project is developed for **academic and educational purposes**.
+A formal open-source license will be added prior to public release.
 
 ---
 
