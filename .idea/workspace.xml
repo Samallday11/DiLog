@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="aae84794-84ce-4cef-8902-2961b2cdfc75" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/dilog/BackendApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/dilog/backend/DemoApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/.vscode/extensions.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/.vscode/settings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/app.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/app/(tabs)/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/app/(tabs)/explore.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/app/(tabs)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/app/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/app/modal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/android-icon-background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/android-icon-foreground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/android-icon-monochrome.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/partial-react-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/react-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/react-logo@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/react-logo@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/assets/images/splash-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/external-link.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/haptic-tab.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/hello-wave.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/parallax-scroll-view.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/themed-text.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/themed-view.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/ui/collapsible.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/ui/icon-symbol.ios.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/components/ui/icon-symbol.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/constants/theme.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/eslint.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/hooks/use-color-scheme.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/hooks/use-color-scheme.web.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/hooks/use-theme-color.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/scripts/reset-project.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobile/tsconfig.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/Users/salihmohamed/Desktop/DiLog" value="38cLb02qS35YRJRqBbbEnuXnfra" />
+    </persistenceIdMap>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;salih004&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Samallday11/DiLog.git&quot;,
+    &quot;accountId&quot;: &quot;1ae88bc6-4239-42f8-93af-c0fefb75279f&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="38cLb02qS35YRJRqBbbEnuXnfra" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/salihmohamed/Desktop/DiLog&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.CommitDialog&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/mobile" />
+      <recent name="$PROJECT_DIR$/../External Libraries" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.27812.49" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.27812.49" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="aae84794-84ce-4cef-8902-2961b2cdfc75" name="Changes" comment="" />
+      <created>1769093980390</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1769093980390</updated>
+      <workItem from="1769093982816" duration="6458000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
