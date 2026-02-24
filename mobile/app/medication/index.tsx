@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function ModalScreen() {
+export default function MedicationIndex() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Modal</Text>
+      <Text style={styles.text}>Medication</Text>
     </View>
   );
 }
