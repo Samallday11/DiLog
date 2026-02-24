@@ -4,56 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aae84794-84ce-4cef-8902-2961b2cdfc75" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/dilog/BackendApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/dilog/backend/DemoApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/.vscode/extensions.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/.vscode/settings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/app.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/app/(tabs)/_layout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/app/(tabs)/explore.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/app/(tabs)/index.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/app/_layout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/app/modal.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/android-icon-background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/android-icon-foreground.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/android-icon-monochrome.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/favicon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/partial-react-logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/react-logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/react-logo@2x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/react-logo@3x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/assets/images/splash-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/external-link.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/haptic-tab.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/hello-wave.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/parallax-scroll-view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/themed-text.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/themed-view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/ui/collapsible.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/ui/icon-symbol.ios.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/components/ui/icon-symbol.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/constants/theme.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/eslint.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/hooks/use-color-scheme.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/hooks/use-color-scheme.web.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/hooks/use-theme-color.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/scripts/reset-project.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mobile/tsconfig.json" afterDir="false" />
+    <list default="true" id="dfca2d6f-7f47-4e14-a7dd-9733c77aa630" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,10 +14,28 @@
   </component>
   <component name="CopilotPersistence">
     <persistenceIdMap>
-      <entry key="_/Users/salihmohamed/Desktop/DiLog" value="38cLb02qS35YRJRqBbbEnuXnfra" />
+      <entry key="_/Users/salihmohamed/Desktop/DiLog" value="38wR6MaWKiZSbHPIxRPRE3Rh80E" />
     </persistenceIdMap>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="origin/Project-Setup" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -85,9 +55,9 @@
   &quot;isMigrated&quot;: true
 }</component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
+  &quot;associatedIndex&quot;: 4
 }</component>
-  <component name="ProjectId" id="38cLb02qS35YRJRqBbbEnuXnfra" />
+  <component name="ProjectId" id="38wR6MaWKiZSbHPIxRPRE3Rh80E" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -98,25 +68,14 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/salihmohamed/Desktop/DiLog&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.CommitDialog&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/mobile" />
-      <recent name="$PROJECT_DIR$/../External Libraries" />
-    </key>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -127,12 +86,13 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="aae84794-84ce-4cef-8902-2961b2cdfc75" name="Changes" comment="" />
-      <created>1769093980390</created>
+      <changelist id="dfca2d6f-7f47-4e14-a7dd-9733c77aa630" name="Changes" comment="" />
+      <created>1769708471131</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1769093980390</updated>
-      <workItem from="1769093982816" duration="6458000" />
+      <updated>1769708471131</updated>
+      <workItem from="1769708472678" duration="343000" />
+      <workItem from="1770146303398" duration="137000" />
     </task>
     <servers />
   </component>
@@ -144,7 +104,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="SHOW_DETAILS_IN_CHANGES" value="false" />
+            </State>
           </value>
         </entry>
       </map>

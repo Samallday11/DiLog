@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 target/
 .idea/
 *.log
 *.class
 .env
+=======
+expo-env.d.ts
+node_modules
+>>>>>>> Stashed changes

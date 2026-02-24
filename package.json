@@ -1,0 +1,26 @@
+{
+  "name": "dilog",
+  "version": "1.0.0",
+  "description": "DiLog - Diabetes Logging Application",
+  "private": true,
+  "workspaces": [
+    "mobile",
+    "backend"
+  ],
+  "scripts": {
+    "mobile": "cd mobile && npm start",
+    "mobile:start": "cd mobile && npm start",
+    "mobile:android": "cd mobile && npm run android",
+    "mobile:ios": "cd mobile && npm run ios",
+    "mobile:web": "cd mobile && npm run web",
+    "mobile:lint": "cd mobile && npm run lint"
+  },
+  "dependencies": {},
+  "overrides": {
+    "@react-native/virtualized-lists": "0.81.5",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-web": "0.21.0"
+  }
+}
