@@ -1,10 +1,9 @@
-<<<<<<< Updated upstream
 target/
+**/target/
 .idea/
 *.log
 *.class
 .env
-=======
 expo-env.d.ts
 node_modules
->>>>>>> Stashed changes
+**/firebase-service-account.json
