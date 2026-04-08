@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,7 +15,6 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Image
@@ -31,7 +31,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Latest Glucose Card */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardTitle}>LATEST GLUCOSE</Text>
@@ -46,7 +45,6 @@ export default function HomeScreen() {
           <Text style={styles.glucoseUnit}>mg/dL</Text>
         </View>
 
-        {/* Mini Chart */}
         <View style={styles.miniChart}>
           {[60, 75, 70, 85, 90, 100].map((height, index) => (
             <View
@@ -54,7 +52,7 @@ export default function HomeScreen() {
               style={[
                 styles.chartBar,
                 {
-                  height: height,
+                  height,
                   backgroundColor:
                     index === 5 ? '#0D9488' : 'rgba(13, 148, 136, 0.3)',
                 },
@@ -74,7 +72,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Quick Actions */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>QUICK ACTIONS</Text>
         <View style={styles.quickActions}>
@@ -104,7 +101,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Upcoming Reminder */}
       <TouchableOpacity
         style={styles.reminderCard}
         onPress={() => router.push('/medication/reminders')}
@@ -121,7 +117,6 @@ export default function HomeScreen() {
         <Ionicons name="chevron-forward" size={20} color="#92400E" />
       </TouchableOpacity>
 
-      {/* Daily Progress */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>DAILY PROGRESS</Text>
         <View style={styles.progressCards}>
@@ -143,7 +138,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* AI Insight */}
       <View style={styles.aiInsightCard}>
         <View style={styles.aiInsightHeader}>
           <View style={styles.aiIcon}>
@@ -176,8 +170,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
     paddingBottom: 24,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -213,10 +205,17 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 16,
     marginTop: -20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+      },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+      },
+    }),
     elevation: 3,
   },
   cardHeader: {
@@ -383,10 +382,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 1px 4px rgba(0, 0, 0, 0.05)',
+      },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+      },
+    }),
     elevation: 2,
   },
   progressCircle: {

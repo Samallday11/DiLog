@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuthStore } from '@/store/authStore';
+import { API_BASE_URL } from '@/lib/api';
 
 const colors = {
   light: {
@@ -41,8 +42,8 @@ export default function LoginScreen() {
 
   const { login, isLoading, error } = useAuthStore();
 
-  const [email, setEmail] = useState('demo@dilog.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [validationError, setValidationError] = useState('');
 
@@ -153,7 +154,7 @@ export default function LoginScreen() {
         <View style={styles.demoInfo}>
           <MaterialIcons name="info" size={16} color={theme.teal} />
           <Text style={[styles.demoText, { color: theme.text }]}>
-            Demo: demo@dilog.com / password123
+            Backend URL: {API_BASE_URL}
           </Text>
         </View>
       </View>

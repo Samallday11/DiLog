@@ -1,9 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
+import { api } from '@/lib/api';
+
 interface User {
-  id: string;
+  id: number;
   fullName: string;
   email: string;
+}
+
+interface AuthResponse {
+  token: string;
+  user: User;
 }
 
 interface AuthState {
@@ -11,132 +19,151 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isHydrated: boolean;
   error: string | null;
+  hydrate: () => Promise<void>;
   login: (email: string, password: string) => Promise<boolean>;
   register: (fullName: string, email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   clearError: () => void;
 }
 
-// Mock user for demo
-const mockUser: User = {
-  id: '1',
-  fullName: 'Demo User',
-  email: 'demo@dilog.com',
-};
+const AUTH_STORAGE_KEY = 'auth-storage';
 
-const mockToken = 'mock-jwt-token-demo';
+function getErrorMessage(error: unknown, fallback: string) {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof (error as { response?: unknown }).response === 'object' &&
+    (error as { response?: { data?: { message?: string } } }).response?.data?.message
+  ) {
+    return (error as { response: { data: { message: string } } }).response.data.message;
+  }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return fallback;
+}
+
+async function persistAuthState(user: User | null, token: string | null, isAuthenticated: boolean) {
+  await AsyncStorage.setItem(
+    AUTH_STORAGE_KEY,
+    JSON.stringify({ user, token, isAuthenticated })
+  );
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  isLoading: false,
+  isHydrated: false,
+  error: null,
+
+  hydrate: async () => {
+    if (typeof window === 'undefined') {
+      set({ isHydrated: true });
+      return;
+    }
+
+    try {
+      const stored = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as {
+          user: User | null;
+          token: string | null;
+          isAuthenticated: boolean;
+        };
+
+        set({
+          user: parsed.user,
+          token: parsed.token,
+          isAuthenticated: parsed.isAuthenticated,
+          isHydrated: true,
+        });
+        return;
+      }
+    } catch {
+      // Ignore corrupt persisted state and continue with a clean session.
+    }
+
+    set({ isHydrated: true });
+  },
+
+  login: async (email: string, password: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.post<AuthResponse>('/auth/login', {
+        email,
+        password,
+      });
+
+      await persistAuthState(response.data.user, response.data.token, true);
+
+      set({
+        user: response.data.user,
+        token: response.data.token,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      });
+      return true;
+    } catch (error) {
+      set({
+        isLoading: false,
+        isAuthenticated: false,
+        token: null,
+        user: null,
+        error: getErrorMessage(error, 'Login failed'),
+      });
+      return false;
+    }
+  },
+
+  register: async (fullName: string, email: string, password: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.post<AuthResponse>('/auth/register', {
+        fullName,
+        email,
+        password,
+      });
+
+      await persistAuthState(response.data.user, response.data.token, true);
+
+      set({
+        user: response.data.user,
+        token: response.data.token,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      });
+      return true;
+    } catch (error) {
+      set({
+        isLoading: false,
+        isAuthenticated: false,
+        token: null,
+        user: null,
+        error: getErrorMessage(error, 'Registration failed'),
+      });
+      return false;
+    }
+  },
+
+  logout: async () => {
+    await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+    set({
       user: null,
       token: null,
       isAuthenticated: false,
-      isLoading: false,
       error: null,
-
-      login: async (email: string, password: string) => {
-        set({ isLoading: true, error: null });
-        try {
-          // Demo credentials
-          if (email === 'demo@dilog.com' && password === 'password123') {
-            set({
-              user: mockUser,
-              token: mockToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-            return true;
-          }
-
-          // TODO: Replace with actual API call
-          // const response = await fetch('YOUR_BACKEND_URL/api/auth/login', {
-          //   method: 'POST',
-          //   headers: { 'Content-Type': 'application/json' },
-          //   body: JSON.stringify({ email, password }),
-          // });
-          // const data = await response.json();
-          // if (response.ok) {
-          //   set({
-          //     user: data.user,
-          //     token: data.token,
-          //     isAuthenticated: true,
-          //   });
-          //   return true;
-          // }
-
-          set({
-            error: 'Invalid email or password',
-            isLoading: false,
-          });
-          return false;
-        } catch (err) {
-          set({
-            error: err instanceof Error ? err.message : 'Login failed',
-            isLoading: false,
-          });
-          return false;
-        }
-      },
-
-      register: async (fullName: string, email: string, password: string) => {
-        set({ isLoading: true, error: null });
-        try {
-          // TODO: Replace with actual API call
-          // const response = await fetch('YOUR_BACKEND_URL/api/auth/register', {
-          //   method: 'POST',
-          //   headers: { 'Content-Type': 'application/json' },
-          //   body: JSON.stringify({ fullName, email, password }),
-          // });
-          // const data = await response.json();
-          // if (response.ok) {
-          //   set({
-          //     user: data.user,
-          //     token: data.token,
-          //     isAuthenticated: true,
-          //   });
-          //   return true;
-          // }
-
-          const newUser: User = {
-            id: Math.random().toString(),
-            fullName,
-            email,
-          };
-
-          set({
-            user: newUser,
-            token: 'mock-token',
-            isAuthenticated: true,
-            isLoading: false,
-          });
-          return true;
-        } catch (err) {
-          set({
-            error: err instanceof Error ? err.message : 'Registration failed',
-            isLoading: false,
-          });
-          return false;
-        }
-      },
-
-      logout: async () => {
-        try {
-          // TODO: Replace with actual API call
-          // await fetch('YOUR_BACKEND_URL/api/auth/logout', {
-          //   method: 'POST',
-          //   headers: { 'Authorization': `Bearer ${get().token}` },
-          // });
-
-          set({
-            user: null,
-            token: null,
-            isAuthenticated: false,
-            error: null,
-          });
-        } catch (err) {
-          console.error('Logout error:', err);
-        }
-      },
+      isLoading: false,
+    });
+  },
 
   clearError: () => set({ error: null }),
 }));

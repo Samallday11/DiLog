@@ -4,48 +4,54 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
-interface Meal {
-  id: string;
-  name: string;
-  type: string;
-  time: string;
-  carbs: number;
-  tags: string[];
+import { fetchMeals, MealEntry } from '@/lib/healthApi';
+import { useAuthStore } from '@/store/authStore';
+
+function formatMealTime(value: string) {
+  return new Date(value).toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
 }
 
 export default function MealHistoryScreen() {
   const router = useRouter();
+  const isFocused = useIsFocused();
+  const user = useAuthStore((state) => state.user);
+  const [meals, setMeals] = useState<MealEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const meals: Meal[] = [
-    {
-      id: '1',
-      name: 'Oatmeal with berries',
-      type: 'Breakfast',
-      time: '8:00 AM',
-      carbs: 45,
-      tags: ['High Fiber', 'Low Sugar'],
-    },
-    {
-      id: '2',
-      name: 'Grilled chicken salad',
-      type: 'Lunch',
-      time: '12:30 PM',
-      carbs: 25,
-      tags: ['Protein Rich', 'Low Carb'],
-    },
-    {
-      id: '3',
-      name: 'Greek yogurt',
-      type: 'Snack',
-      time: '3:00 PM',
-      carbs: 15,
-      tags: ['Protein Rich'],
-    },
-  ];
+  useEffect(() => {
+    const loadMeals = async () => {
+      if (!user?.id || !isFocused) {
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError('');
+        const data = await fetchMeals(user.id);
+        setMeals(data);
+      } catch (loadError) {
+        setError(loadError instanceof Error ? loadError.message : 'Failed to load meals');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMeals();
+  }, [isFocused, user?.id]);
 
   const getMealIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -60,40 +66,6 @@ export default function MealHistoryScreen() {
     }
   };
 
-  const renderMeal = ({ item }: { item: Meal }) => (
-    <TouchableOpacity
-      style={styles.mealCard}
-      onPress={() => router.push('/meals/meal-details')}
-    >
-      <View style={styles.mealLeft}>
-        <View style={styles.mealIcon}>
-          <Ionicons
-            name={getMealIcon(item.type) as any}
-            size={24}
-            color="#F59E0B"
-          />
-        </View>
-        <View style={styles.mealInfo}>
-          <Text style={styles.mealName}>{item.name}</Text>
-          <Text style={styles.mealTime}>
-            {item.type} • {item.time}
-          </Text>
-          <View style={styles.tags}>
-            {item.tags.slice(0, 2).map((tag, idx) => (
-              <View key={idx} style={styles.tag}>
-                <Text style={styles.tagText}>{tag}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      </View>
-      <View style={styles.carbsBadge}>
-        <Text style={styles.carbsValue}>{item.carbs}g</Text>
-        <Text style={styles.carbsLabel}>carbs</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -101,17 +73,61 @@ export default function MealHistoryScreen() {
           <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Meal History</Text>
-        <TouchableOpacity>
-          <Ionicons name="filter-outline" size={24} color="#0F172A" />
+        <TouchableOpacity onPress={() => router.push('/meals/add-meal')}>
+          <Ionicons name="add-circle-outline" size={24} color="#F59E0B" />
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={meals}
-        renderItem={renderMeal}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
-      />
+      {isLoading ? (
+        <View style={styles.centerState}>
+          <ActivityIndicator size="large" color="#F59E0B" />
+        </View>
+      ) : error ? (
+        <View style={styles.centerState}>
+          <Text style={styles.stateText}>{error}</Text>
+        </View>
+      ) : meals.length === 0 ? (
+        <View style={styles.centerState}>
+          <Text style={styles.stateTitle}>No meals yet</Text>
+          <Text style={styles.stateText}>Log a meal to build your meal history.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={meals}
+          keyExtractor={(item) => String(item.id)}
+          contentContainerStyle={styles.list}
+          renderItem={({ item }) => (
+            <View style={styles.mealCard}>
+              <View style={styles.mealLeft}>
+                <View style={styles.mealIcon}>
+                  <Ionicons
+                    name={getMealIcon(item.type) as any}
+                    size={24}
+                    color="#F59E0B"
+                  />
+                </View>
+                <View style={styles.mealInfo}>
+                  <Text style={styles.mealName}>{item.name}</Text>
+                  <Text style={styles.mealTime}>
+                    {item.type} • {formatMealTime(item.loggedAt)}
+                  </Text>
+                  <View style={styles.tags}>
+                    {item.tags.slice(0, 2).map((tag) => (
+                      <View key={tag} style={styles.tag}>
+                        <Text style={styles.tagText}>{tag}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+              <View style={styles.carbsBadge}>
+                <Text style={styles.carbsValue}>{item.carbs}g</Text>
+                <Text style={styles.carbsLabel}>carbs</Text>
+              </View>
+            </View>
+          )}
+        />
+      )}
 
       <TouchableOpacity
         style={styles.fab}
@@ -160,7 +176,7 @@ const styles = StyleSheet.create({
   mealInfo: { flex: 1 },
   mealName: { fontSize: 16, fontWeight: '600', color: '#0F172A', marginBottom: 4 },
   mealTime: { fontSize: 13, color: '#64748B', marginBottom: 8 },
-  tags: { flexDirection: 'row', gap: 6 },
+  tags: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
   tag: { backgroundColor: '#F1F5F9', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
   tagText: { fontSize: 11, color: '#64748B', fontWeight: '500' },
   carbsBadge: { alignItems: 'center', justifyContent: 'center' },
@@ -176,10 +192,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#F59E0B',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+      },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
     elevation: 8,
+  },
+  centerState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  stateTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 8,
+  },
+  stateText: {
+    textAlign: 'center',
+    color: '#64748B',
+    lineHeight: 20,
   },
 });

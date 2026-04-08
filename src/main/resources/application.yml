@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: dilog-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dilog
+    username: postgres
+    password: Sami2311
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  sql:
+    init:
+      mode: never
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+app:
+  jwt:
+    secret: 6M3+6fXQ3gT6bU4qfF+5oL0m9kWj2b0d7Aq1uN8sP4rY2vH5xC9tL1zE6nM3qR7s
+    expiration-ms: 86400000
+
+logging:
+  level:
+    com.dilog.backend: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

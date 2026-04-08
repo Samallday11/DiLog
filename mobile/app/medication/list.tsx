@@ -4,6 +4,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,7 +48,9 @@ export default function MedicationListScreen() {
       <View style={styles.medHeader}>
         <View style={styles.medInfo}>
           <Text style={styles.medName}>{item.name}</Text>
-          <Text style={styles.medDosage}>{item.dosage} • {item.frequency}</Text>
+          <Text style={styles.medDosage}>
+            {item.dosage} • {item.frequency}
+          </Text>
         </View>
         <TouchableOpacity
           style={[styles.checkButton, item.taken && styles.checkButtonTaken]}
@@ -142,7 +145,12 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
   },
   statItem: { flex: 1, alignItems: 'center' },
-  statValue: { fontSize: 28, fontWeight: '800', color: '#8B5CF6', marginBottom: 4 },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#8B5CF6',
+    marginBottom: 4,
+  },
   statLabel: { fontSize: 13, color: '#64748B' },
   statDivider: { width: 1, backgroundColor: '#E2E8F0', marginHorizontal: 20 },
   list: { padding: 16, paddingBottom: 100 },
@@ -154,13 +162,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
-  medHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  medHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
   medInfo: { flex: 1 },
-  medName: { fontSize: 16, fontWeight: '600', color: '#0F172A', marginBottom: 4 },
+  medName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
   medDosage: { fontSize: 14, color: '#64748B' },
   checkButton: { padding: 4 },
   checkButtonTaken: {},
-  timesContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
+  timesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
   timeChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -190,10 +212,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B5CF6',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+      },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+    }),
     elevation: 8,
   },
 });

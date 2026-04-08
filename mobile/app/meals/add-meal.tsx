@@ -6,24 +6,30 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
+import { createMeal } from '@/lib/healthApi';
+import { useAuthStore } from '@/store/authStore';
+
 export default function AddMealScreen() {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const [mealName, setMealName] = useState('');
   const [selectedMealType, setSelectedMealType] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [carbs, setCarbs] = useState('');
   const [notes, setNotes] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const mealTypes = [
-    { id: 'breakfast', label: 'Breakfast', icon: 'sunny' },
-    { id: 'lunch', label: 'Lunch', icon: 'partly-sunny' },
-    { id: 'dinner', label: 'Dinner', icon: 'moon' },
-    { id: 'snack', label: 'Snack', icon: 'fast-food' },
+    { id: 'Breakfast', label: 'Breakfast', icon: 'sunny' },
+    { id: 'Lunch', label: 'Lunch', icon: 'partly-sunny' },
+    { id: 'Dinner', label: 'Dinner', icon: 'moon' },
+    { id: 'Snack', label: 'Snack', icon: 'fast-food' },
   ];
 
   const foodTags = [
@@ -43,33 +49,45 @@ export default function AddMealScreen() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!user?.id) {
+      Alert.alert('Error', 'You must be logged in to save a meal.');
+      return;
+    }
+
     if (!mealName || !selectedMealType) {
       Alert.alert('Error', 'Please enter meal name and select meal type');
       return;
     }
 
-    // TODO: Save to backend
-    console.log('Saving meal:', {
-      name: mealName,
-      type: selectedMealType,
-      tags: selectedTags,
-      carbs,
-      notes,
-    });
+    try {
+      setIsSaving(true);
+      await createMeal(user.id, {
+        name: mealName,
+        type: selectedMealType,
+        tags: selectedTags,
+        carbs: Number(carbs) || 0,
+        notes,
+      });
 
-    Alert.alert('Success', 'Meal logged successfully', [
-      { text: 'OK', onPress: () => router.back() },
-    ]);
+      Alert.alert('Success', 'Meal logged successfully', [
+        { text: 'OK', onPress: () => router.replace('/meals/history') },
+      ]);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save meal';
+      Alert.alert('Error', message);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
+          disabled={isSaving}
         >
           <Ionicons name="close" size={28} color="#0F172A" />
         </TouchableOpacity>
@@ -82,7 +100,6 @@ export default function AddMealScreen() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* Meal Name */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>What did you eat?</Text>
           <TextInput
@@ -90,10 +107,10 @@ export default function AddMealScreen() {
             placeholder="e.g., Grilled chicken salad"
             value={mealName}
             onChangeText={setMealName}
+            editable={!isSaving}
           />
         </View>
 
-        {/* Meal Type */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Meal Type</Text>
           <View style={styles.mealTypeGrid}>
@@ -105,6 +122,7 @@ export default function AddMealScreen() {
                   selectedMealType === type.id && styles.mealTypeButtonSelected,
                 ]}
                 onPress={() => setSelectedMealType(type.id)}
+                disabled={isSaving}
               >
                 <Ionicons
                   name={type.icon as any}
@@ -124,9 +142,8 @@ export default function AddMealScreen() {
           </View>
         </View>
 
-        {/* Carbs Estimate */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Carbs (Optional)</Text>
+          <Text style={styles.sectionTitle}>Carbs</Text>
           <View style={styles.carbsInput}>
             <TextInput
               style={styles.carbsValue}
@@ -134,12 +151,12 @@ export default function AddMealScreen() {
               keyboardType="decimal-pad"
               value={carbs}
               onChangeText={setCarbs}
+              editable={!isSaving}
             />
             <Text style={styles.carbsUnit}>grams</Text>
           </View>
         </View>
 
-        {/* Food Tags */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Food Tags (Optional)</Text>
           <View style={styles.tagsContainer}>
@@ -151,6 +168,7 @@ export default function AddMealScreen() {
                   selectedTags.includes(tag) && styles.tagSelected,
                 ]}
                 onPress={() => handleTagToggle(tag)}
+                disabled={isSaving}
               >
                 <Text
                   style={[
@@ -165,7 +183,6 @@ export default function AddMealScreen() {
           </View>
         </View>
 
-        {/* Notes */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Notes (Optional)</Text>
           <TextInput
@@ -175,33 +192,26 @@ export default function AddMealScreen() {
             onChangeText={setNotes}
             multiline
             maxLength={300}
+            editable={!isSaving}
           />
           <Text style={styles.characterCount}>{notes.length}/300</Text>
         </View>
-
-        {/* AI Tip */}
-        <View style={styles.tipCard}>
-          <View style={styles.tipIcon}>
-            <Ionicons name="bulb" size={20} color="#F59E0B" />
-          </View>
-          <Text style={styles.tipText}>
-            Logging meals helps our AI provide personalized recommendations based
-            on your glucose response patterns.
-          </Text>
-        </View>
       </ScrollView>
 
-      {/* Save Button */}
       <View style={styles.footer}>
         <TouchableOpacity
           style={[
             styles.saveButton,
-            (!mealName || !selectedMealType) && styles.saveButtonDisabled,
+            (!mealName || !selectedMealType || isSaving) && styles.saveButtonDisabled,
           ]}
           onPress={handleSave}
-          disabled={!mealName || !selectedMealType}
+          disabled={!mealName || !selectedMealType || isSaving}
         >
-          <Text style={styles.saveButtonText}>Log Meal</Text>
+          {isSaving ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.saveButtonText}>Log Meal</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -346,30 +356,6 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
     textAlign: 'right',
     marginTop: 4,
-  },
-  tipCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFBEB',
-    borderRadius: 12,
-    padding: 16,
-    gap: 12,
-    borderWidth: 1,
-    borderColor: '#FEF3C7',
-  },
-  tipIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: '#FEF3C7',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tipText: {
-    flex: 1,
-    fontSize: 13,
-    color: '#78350F',
-    lineHeight: 18,
   },
   footer: {
     position: 'absolute',
