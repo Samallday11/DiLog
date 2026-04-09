@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,6 +52,13 @@ public class Meal {
     @Column(length = 500)
     private String notes;
 
-    @Column(name = "logged_at", nullable = false)
+    @Column(name = "logged_at")
     private LocalDateTime loggedAt;
+
+    @PrePersist
+    void ensureLoggedAt() {
+        if (loggedAt == null) {
+            loggedAt = LocalDateTime.now();
+        }
+    }
 }

@@ -1,12 +1,11 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+
+import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { FuturisticScreen } from '@/components/ui/futuristic-screen';
+import { GlassCard } from '@/components/ui/glass-card';
+import { HapticPressable } from '@/components/ui/haptic-pressable';
 
 export default function LogScreen() {
   const router = useRouter();
@@ -16,210 +15,186 @@ export default function LogScreen() {
       title: 'Glucose',
       subtitle: 'Log blood sugar reading',
       icon: 'water',
-      color: '#0D9488',
-      bgColor: '#E0F2F1',
+      color: '#00e5c4',
+      bgColor: 'rgba(0, 229, 196, 0.14)',
       route: '/glucose/log-reading',
     },
     {
       title: 'Meal',
       subtitle: 'Track your food intake',
       icon: 'restaurant',
-      color: '#F59E0B',
-      bgColor: '#FEF3C7',
+      color: '#f59e0b',
+      bgColor: 'rgba(245, 158, 11, 0.14)',
       route: '/meals/add-meal',
     },
     {
       title: 'Medication',
       subtitle: 'Record medication taken',
       icon: 'medical',
-      color: '#8B5CF6',
-      bgColor: '#EDE9FE',
+      color: '#7dd3fc',
+      bgColor: 'rgba(0, 180, 220, 0.14)',
       route: '/medication/add-medication',
     },
     {
       title: 'Activity',
       subtitle: 'Log exercise or activity',
       icon: 'fitness',
-      color: '#3B82F6',
-      bgColor: '#DBEAFE',
+      color: '#c084fc',
+      bgColor: 'rgba(192, 132, 252, 0.14)',
       route: '/activity/log-activity',
     },
   ];
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
+    <FuturisticScreen scrollable contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Quick Log</Text>
-        <Text style={styles.headerSubtitle}>
-          What would you like to track?
-        </Text>
+        <Text style={styles.headerSubtitle}>What would you like to track?</Text>
       </View>
 
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {logOptions.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.logCard}
-            onPress={() => router.push(option.route as any)}
-          >
-            <View
-              style={[styles.iconContainer, { backgroundColor: option.bgColor }]}
-            >
-              <Ionicons
-                name={option.icon as any}
-                size={32}
-                color={option.color}
-              />
+      {logOptions.map((option, index) => (
+        <HapticPressable
+          key={index}
+          style={styles.logCardWrap}
+          onPress={() => router.push(option.route as any)}
+        >
+          <GlassCard style={styles.logCard}>
+            <View style={[styles.iconContainer, { backgroundColor: option.bgColor }]}>
+              <Ionicons name={option.icon as any} size={30} color={option.color} />
             </View>
             <View style={styles.logInfo}>
               <Text style={styles.logTitle}>{option.title}</Text>
               <Text style={styles.logSubtitle}>{option.subtitle}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color="#CBD5E1" />
-          </TouchableOpacity>
-        ))}
+            <Ionicons name="chevron-forward" size={22} color={FuturisticTheme.colors.muted} />
+          </GlassCard>
+        </HapticPressable>
+      ))}
 
-        {/* Recent Logs */}
-        <View style={styles.recentSection}>
-          <Text style={styles.recentTitle}>RECENT LOGS</Text>
-          
-          <View style={styles.recentCard}>
-            <View style={styles.recentItem}>
-              <View style={styles.recentLeft}>
-                <View style={[styles.recentIcon, { backgroundColor: '#E0F2F1' }]}>
-                  <Ionicons name="water" size={20} color="#0D9488" />
-                </View>
-                <View>
-                  <Text style={styles.recentLabel}>Glucose Reading</Text>
-                  <Text style={styles.recentValue}>110 mg/dL</Text>
-                </View>
+      <View style={styles.recentSection}>
+        <Text style={styles.recentTitle}>Recent Logs</Text>
+
+        <GlassCard style={styles.recentCard}>
+          <View style={styles.recentItem}>
+            <View style={styles.recentLeft}>
+              <View style={[styles.recentIcon, { backgroundColor: 'rgba(0, 229, 196, 0.14)' }]}>
+                <Ionicons name="water" size={20} color="#00e5c4" />
               </View>
-              <Text style={styles.recentTime}>2h ago</Text>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.recentItem}>
-              <View style={styles.recentLeft}>
-                <View style={[styles.recentIcon, { backgroundColor: '#FEF3C7' }]}>
-                  <Ionicons name="restaurant" size={20} color="#F59E0B" />
-                </View>
-                <View>
-                  <Text style={styles.recentLabel}>Breakfast</Text>
-                  <Text style={styles.recentValue}>Oatmeal with berries</Text>
-                </View>
+              <View>
+                <Text style={styles.recentLabel}>Glucose Reading</Text>
+                <Text style={styles.recentValue}>110 mg/dL</Text>
               </View>
-              <Text style={styles.recentTime}>3h ago</Text>
             </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.recentItem}>
-              <View style={styles.recentLeft}>
-                <View style={[styles.recentIcon, { backgroundColor: '#EDE9FE' }]}>
-                  <Ionicons name="medical" size={20} color="#8B5CF6" />
-                </View>
-                <View>
-                  <Text style={styles.recentLabel}>Medication</Text>
-                  <Text style={styles.recentValue}>Morning Insulin</Text>
-                </View>
-              </View>
-              <Text style={styles.recentTime}>5h ago</Text>
-            </View>
+            <Text style={styles.recentTime}>2h ago</Text>
           </View>
-        </View>
-      </ScrollView>
-    </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.recentItem}>
+            <View style={styles.recentLeft}>
+              <View style={[styles.recentIcon, { backgroundColor: 'rgba(245, 158, 11, 0.14)' }]}>
+                <Ionicons name="restaurant" size={20} color="#f59e0b" />
+              </View>
+              <View>
+                <Text style={styles.recentLabel}>Breakfast</Text>
+                <Text style={styles.recentValue}>Oatmeal with berries</Text>
+              </View>
+            </View>
+            <Text style={styles.recentTime}>3h ago</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.recentItem}>
+            <View style={styles.recentLeft}>
+              <View style={[styles.recentIcon, { backgroundColor: 'rgba(0, 180, 220, 0.14)' }]}>
+                <Ionicons name="medical" size={20} color="#7dd3fc" />
+              </View>
+              <View>
+                <Text style={styles.recentLabel}>Medication</Text>
+                <Text style={styles.recentValue}>Morning Insulin</Text>
+              </View>
+            </View>
+            <Text style={styles.recentTime}>5h ago</Text>
+          </View>
+        </GlassCard>
+      </View>
+    </FuturisticScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
+  contentContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 56,
+    paddingBottom: 120,
   },
   header: {
-    backgroundColor: '#fff',
-    paddingTop: 60,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    marginBottom: 24,
   },
   headerTitle: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
     fontSize: 28,
     fontWeight: '700',
-    color: '#0F172A',
-    marginBottom: 4,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    marginBottom: 6,
   },
   headerSubtitle: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 15,
-    color: '#64748B',
   },
-  content: {
-    flex: 1,
-  },
-  contentContainer: {
-    padding: 16,
-    paddingBottom: 100,
+  logCardWrap: {
+    marginBottom: 14,
   },
   logCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    gap: 14,
   },
   iconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
+    width: 58,
+    height: 58,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
   logInfo: {
     flex: 1,
   },
   logTitle: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 18,
-    fontWeight: '600',
-    color: '#0F172A',
+    fontWeight: '700',
     marginBottom: 4,
   },
   logSubtitle: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 14,
-    color: '#64748B',
   },
   recentSection: {
-    marginTop: 32,
+    marginTop: 20,
   },
   recentTitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#64748B',
-    letterSpacing: 0.5,
     marginBottom: 12,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    letterSpacing: 2.2,
+    textTransform: 'uppercase',
   },
   recentCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    paddingVertical: 8,
   },
   recentItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingVertical: 12,
   },
   recentLeft: {
     flexDirection: 'row',
@@ -228,29 +203,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   recentIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 42,
+    height: 42,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
   },
   recentLabel: {
-    fontSize: 12,
-    color: '#64748B',
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 11,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
     marginBottom: 2,
   },
   recentValue: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 15,
-    fontWeight: '600',
-    color: '#0F172A',
+    fontWeight: '700',
   },
   recentTime: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 13,
-    color: '#94A3B8',
   },
   divider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
-    marginLeft: 68,
+    backgroundColor: 'rgba(0, 229, 196, 0.08)',
+    marginLeft: 54,
   },
 });

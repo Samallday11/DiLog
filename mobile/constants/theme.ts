@@ -1,53 +1,87 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import { Platform } from 'react-native';
-
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#5d9bca',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: '#e0f4f0',
+    background: '#050d12',
+    tint: '#00e5c4',
+    icon: 'rgba(0, 200, 160, 0.5)',
+    tabIconDefault: 'rgba(0, 200, 160, 0.48)',
+    tabIconSelected: '#00e5c4',
+    surface: 'rgba(10, 28, 36, 0.7)',
+    surfaceStrong: 'rgba(6, 18, 24, 0.92)',
+    border: 'rgba(0, 229, 196, 0.18)',
+    borderStrong: 'rgba(0, 229, 196, 0.42)',
+    secondary: '#0d9488',
+    accentBlue: 'rgba(0, 180, 220, 0.7)',
+    muted: 'rgba(0, 200, 160, 0.5)',
+    danger: '#ff5f7a',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: '#e0f4f0',
+    background: '#050d12',
+    tint: '#00e5c4',
+    icon: 'rgba(0, 200, 160, 0.5)',
+    tabIconDefault: 'rgba(0, 200, 160, 0.48)',
+    tabIconSelected: '#00e5c4',
+    surface: 'rgba(10, 28, 36, 0.7)',
+    surfaceStrong: 'rgba(6, 18, 24, 0.92)',
+    border: 'rgba(0, 229, 196, 0.18)',
+    borderStrong: 'rgba(0, 229, 196, 0.42)',
+    secondary: '#0d9488',
+    accentBlue: 'rgba(0, 180, 220, 0.7)',
+    muted: 'rgba(0, 200, 160, 0.5)',
+    danger: '#ff5f7a',
   },
 };
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
+    sans: 'Rajdhani',
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+    mono: 'Orbitron',
   },
   default: {
-    sans: 'normal',
+    sans: 'Rajdhani',
     serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
+    rounded: 'Rajdhani',
+    mono: 'Orbitron',
   },
   web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+    sans: "'Rajdhani', 'Trebuchet MS', system-ui, sans-serif",
     serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    rounded: "'Rajdhani', 'Trebuchet MS', system-ui, sans-serif",
+    mono: "'Orbitron', 'Aldrich', 'Eurostile', 'Trebuchet MS', monospace",
   },
 });
+
+export const FuturisticTheme = {
+  colors: Colors.dark,
+  spacing: {
+    xs: 6,
+    sm: 10,
+    md: 16,
+    lg: 20,
+    xl: 24,
+    xxl: 32,
+  },
+  radius: {
+    sm: 14,
+    md: 20,
+    lg: 28,
+    pill: 999,
+  },
+  shadow: Platform.select({
+    web: {
+      boxShadow: '0 18px 50px rgba(0, 0, 0, 0.35)',
+    },
+    default: {
+      shadowColor: '#00e5c4',
+      shadowOffset: { width: 0, height: 12 },
+      shadowOpacity: 0.18,
+      shadowRadius: 24,
+      elevation: 10,
+    },
+  }),
+};

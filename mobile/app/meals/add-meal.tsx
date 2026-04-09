@@ -1,19 +1,22 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
 import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { createMeal } from '@/lib/healthApi';
 import { useAuthStore } from '@/store/authStore';
+import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { FuturisticScreen } from '@/components/ui/futuristic-screen';
+import { GlassCard } from '@/components/ui/glass-card';
+import { HapticPressable } from '@/components/ui/haptic-pressable';
 
 export default function AddMealScreen() {
   const router = useRouter();
@@ -82,17 +85,15 @@ export default function AddMealScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <FuturisticScreen contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-          disabled={isSaving}
-        >
-          <Ionicons name="close" size={28} color="#0F172A" />
-        </TouchableOpacity>
+        <HapticPressable onPress={() => router.back()} disabled={isSaving}>
+          <View style={styles.backButton}>
+            <Ionicons name="close" size={24} color={FuturisticTheme.colors.text} />
+          </View>
+        </HapticPressable>
         <Text style={styles.headerTitle}>Add Meal</Text>
-        <View style={{ width: 28 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView
@@ -102,218 +103,243 @@ export default function AddMealScreen() {
       >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>What did you eat?</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder="e.g., Grilled chicken salad"
-            value={mealName}
-            onChangeText={setMealName}
-            editable={!isSaving}
-          />
+          <GlassCard style={styles.fieldCard}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="e.g., Grilled chicken salad"
+              placeholderTextColor={FuturisticTheme.colors.muted}
+              value={mealName}
+              onChangeText={setMealName}
+              editable={!isSaving}
+            />
+          </GlassCard>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Meal Type</Text>
           <View style={styles.mealTypeGrid}>
             {mealTypes.map((type) => (
-              <TouchableOpacity
+              <HapticPressable
                 key={type.id}
-                style={[
-                  styles.mealTypeButton,
-                  selectedMealType === type.id && styles.mealTypeButtonSelected,
-                ]}
+                style={styles.mealTypeButtonWrap}
                 onPress={() => setSelectedMealType(type.id)}
                 disabled={isSaving}
               >
-                <Ionicons
-                  name={type.icon as any}
-                  size={24}
-                  color={selectedMealType === type.id ? '#F59E0B' : '#64748B'}
-                />
-                <Text
+                <GlassCard
                   style={[
-                    styles.mealTypeText,
-                    selectedMealType === type.id && styles.mealTypeTextSelected,
+                    styles.mealTypeButton,
+                    selectedMealType === type.id && styles.mealTypeButtonSelected,
                   ]}
                 >
-                  {type.label}
-                </Text>
-              </TouchableOpacity>
+                  <Ionicons
+                    name={type.icon as any}
+                    size={24}
+                    color={selectedMealType === type.id ? '#031217' : FuturisticTheme.colors.tint}
+                  />
+                  <Text
+                    style={[
+                      styles.mealTypeText,
+                      selectedMealType === type.id && styles.mealTypeTextSelected,
+                    ]}
+                  >
+                    {type.label}
+                  </Text>
+                </GlassCard>
+              </HapticPressable>
             ))}
           </View>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Carbs</Text>
-          <View style={styles.carbsInput}>
+          <GlassCard style={styles.carbsInput}>
             <TextInput
               style={styles.carbsValue}
               placeholder="0"
+              placeholderTextColor={FuturisticTheme.colors.muted}
               keyboardType="decimal-pad"
               value={carbs}
               onChangeText={setCarbs}
               editable={!isSaving}
             />
             <Text style={styles.carbsUnit}>grams</Text>
-          </View>
+          </GlassCard>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Food Tags (Optional)</Text>
           <View style={styles.tagsContainer}>
             {foodTags.map((tag) => (
-              <TouchableOpacity
+              <HapticPressable
                 key={tag}
-                style={[
-                  styles.tag,
-                  selectedTags.includes(tag) && styles.tagSelected,
-                ]}
                 onPress={() => handleTagToggle(tag)}
                 disabled={isSaving}
               >
-                <Text
+                <View
                   style={[
-                    styles.tagText,
-                    selectedTags.includes(tag) && styles.tagTextSelected,
+                    styles.tag,
+                    selectedTags.includes(tag) && styles.tagSelected,
                   ]}
                 >
-                  {tag}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.tagText,
+                      selectedTags.includes(tag) && styles.tagTextSelected,
+                    ]}
+                  >
+                    {tag}
+                  </Text>
+                </View>
+              </HapticPressable>
             ))}
           </View>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Notes (Optional)</Text>
-          <TextInput
-            style={styles.notesInput}
-            placeholder="Add portion sizes, preparation method, how you felt after..."
-            value={notes}
-            onChangeText={setNotes}
-            multiline
-            maxLength={300}
-            editable={!isSaving}
-          />
+          <GlassCard style={styles.fieldCard}>
+            <TextInput
+              style={styles.notesInput}
+              placeholder="Add portion sizes, preparation method, how you felt after..."
+              placeholderTextColor={FuturisticTheme.colors.muted}
+              value={notes}
+              onChangeText={setNotes}
+              multiline
+              maxLength={300}
+              editable={!isSaving}
+            />
+          </GlassCard>
           <Text style={styles.characterCount}>{notes.length}/300</Text>
         </View>
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[
-            styles.saveButton,
-            (!mealName || !selectedMealType || isSaving) && styles.saveButtonDisabled,
-          ]}
+        <HapticPressable
+          style={styles.saveButtonWrap}
           onPress={handleSave}
           disabled={!mealName || !selectedMealType || isSaving}
         >
-          {isSaving ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.saveButtonText}>Log Meal</Text>
-          )}
-        </TouchableOpacity>
+          <View
+            style={[
+              styles.saveButton,
+              (!mealName || !selectedMealType || isSaving) && styles.saveButtonDisabled,
+            ]}
+          >
+            {isSaving ? (
+              <ActivityIndicator color="#031217" />
+            ) : (
+              <Text style={styles.saveButtonText}>Log Meal</Text>
+            )}
+          </View>
+        </HapticPressable>
       </View>
-    </View>
+    </FuturisticScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    paddingTop: 56,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingTop: 60,
-    paddingBottom: 16,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    marginBottom: 18,
   },
   backButton: {
-    padding: 4,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: FuturisticTheme.colors.surface,
+    borderWidth: 1,
+    borderColor: FuturisticTheme.colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTitle: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
     fontSize: 18,
     fontWeight: '700',
-    color: '#0F172A',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+  },
+  headerSpacer: {
+    width: 42,
   },
   content: {
     flex: 1,
   },
   contentContainer: {
-    padding: 20,
-    paddingBottom: 120,
+    paddingHorizontal: 20,
+    paddingBottom: 130,
   },
   section: {
-    marginBottom: 28,
+    marginBottom: 26,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#0F172A',
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
     marginBottom: 12,
   },
+  fieldCard: {
+    paddingVertical: 10,
+  },
   textInput: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 16,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 16,
-    color: '#0F172A',
   },
   mealTypeGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
   },
-  mealTypeButton: {
+  mealTypeButtonWrap: {
     width: '47%',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 16,
+  },
+  mealTypeButton: {
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
+    minHeight: 108,
+    justifyContent: 'center',
   },
   mealTypeButtonSelected: {
-    backgroundColor: '#FEF3C7',
-    borderColor: '#F59E0B',
+    backgroundColor: FuturisticTheme.colors.tint,
+    borderColor: FuturisticTheme.colors.tint,
   },
   mealTypeText: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 14,
-    fontWeight: '600',
-    color: '#64748B',
+    fontWeight: '700',
   },
   mealTypeTextSelected: {
-    color: '#F59E0B',
+    color: '#031217',
   },
   carbsInput: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
   },
   carbsValue: {
     flex: 1,
-    fontSize: 24,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
+    fontSize: 28,
     fontWeight: '700',
-    color: '#0F172A',
+    letterSpacing: 1.2,
   },
   carbsUnit: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 16,
     fontWeight: '600',
-    color: '#64748B',
   },
   tagsContainer: {
     flexDirection: 'row',
@@ -321,64 +347,64 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tag: {
-    paddingVertical: 8,
+    paddingVertical: 9,
     paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: '#fff',
+    borderRadius: 999,
+    backgroundColor: FuturisticTheme.colors.surface,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: FuturisticTheme.colors.border,
   },
   tagSelected: {
-    backgroundColor: '#0D9488',
-    borderColor: '#0D9488',
+    backgroundColor: 'rgba(0, 229, 196, 0.18)',
+    borderColor: FuturisticTheme.colors.tint,
   },
   tagText: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 13,
-    fontWeight: '500',
-    color: '#64748B',
+    fontWeight: '600',
   },
   tagTextSelected: {
-    color: '#fff',
+    color: FuturisticTheme.colors.tint,
   },
   notesInput: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 16,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 15,
-    color: '#0F172A',
     minHeight: 100,
     textAlignVertical: 'top',
   },
   characterCount: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 12,
-    color: '#94A3B8',
     textAlign: 'right',
-    marginTop: 4,
+    marginTop: 6,
   },
   footer: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#fff',
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    left: 20,
+    right: 20,
+    bottom: 28,
+  },
+  saveButtonWrap: {
+    borderRadius: 999,
   },
   saveButton: {
-    backgroundColor: '#F59E0B',
-    borderRadius: 16,
+    backgroundColor: FuturisticTheme.colors.tint,
+    borderRadius: 999,
     paddingVertical: 16,
     alignItems: 'center',
   },
   saveButtonDisabled: {
-    backgroundColor: '#CBD5E1',
+    backgroundColor: 'rgba(0, 229, 196, 0.2)',
   },
   saveButtonText: {
-    fontSize: 16,
+    color: '#031217',
+    fontFamily: Fonts.mono,
+    fontSize: 14,
     fontWeight: '700',
-    color: '#fff',
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
   },
 });

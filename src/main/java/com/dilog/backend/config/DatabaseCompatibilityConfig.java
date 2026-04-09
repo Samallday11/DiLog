@@ -46,6 +46,17 @@ public class DatabaseCompatibilityConfig {
                         ADD CONSTRAINT users_email_unique UNIQUE (email)
                         """);
             }
+
+            jdbcTemplate.execute("""
+                    ALTER TABLE meals
+                    ADD COLUMN IF NOT EXISTS logged_at TIMESTAMP
+                    """);
+
+            jdbcTemplate.execute("""
+                    UPDATE meals
+                    SET logged_at = NOW()
+                    WHERE logged_at IS NULL
+                    """);
         };
     }
 }

@@ -1,15 +1,20 @@
+import { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   FlatList,
-  TextInput,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
-import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+
+import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { FuturisticScreen } from '@/components/ui/futuristic-screen';
+import { GlassCard } from '@/components/ui/glass-card';
+import { HapticPressable } from '@/components/ui/haptic-pressable';
+import { BlinkIndicator, PulseHalo } from '@/components/ui/animated-metrics';
 
 interface Message {
   id: string;
@@ -42,11 +47,10 @@ export default function AIChatScreen() {
     setMessages([...messages, newMessage]);
     setInputText('');
 
-    // Simulate AI response
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Based on your recent glucose readings, I recommend meals high in fiber and protein. Would you like specific meal suggestions for breakfast, lunch, or dinner?",
+        text: 'Based on your recent glucose readings, I recommend meals high in fiber and protein. Would you like specific meal suggestions for breakfast, lunch, or dinner?',
         isUser: false,
         timestamp: new Date(),
       };
@@ -69,9 +73,11 @@ export default function AIChatScreen() {
       ]}
     >
       {!item.isUser && (
-        <View style={styles.aiAvatar}>
-          <Ionicons name="sparkles" size={16} color="#3B82F6" />
-        </View>
+        <PulseHalo style={styles.aiAvatarHalo}>
+          <View style={styles.aiAvatar}>
+            <Ionicons name="sparkles" size={16} color={FuturisticTheme.colors.accentBlue} />
+          </View>
+        </PulseHalo>
       )}
       <View
         style={[
@@ -79,12 +85,7 @@ export default function AIChatScreen() {
           item.isUser ? styles.userBubble : styles.aiBubble,
         ]}
       >
-        <Text
-          style={[
-            styles.messageText,
-            item.isUser ? styles.userText : styles.aiText,
-          ]}
-        >
+        <Text style={[styles.messageText, item.isUser ? styles.userText : styles.aiText]}>
           {item.text}
         </Text>
         <Text
@@ -103,131 +104,142 @@ export default function AIChatScreen() {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <View style={styles.headerIcon}>
-            <Ionicons name="sparkles" size={24} color="#3B82F6" />
-          </View>
-          <View>
-            <Text style={styles.headerTitle}>AI Health Assistant</Text>
-            <View style={styles.statusIndicator}>
-              <View style={styles.onlineDot} />
-              <Text style={styles.statusText}>Online</Text>
+    <FuturisticScreen>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={100}
+      >
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <PulseHalo style={styles.headerHalo}>
+              <View style={styles.headerIcon}>
+                <Ionicons name="sparkles" size={22} color={FuturisticTheme.colors.accentBlue} />
+              </View>
+            </PulseHalo>
+            <View>
+              <Text style={styles.headerTitle}>AI Health Assistant</Text>
+              <View style={styles.statusIndicator}>
+                <BlinkIndicator style={styles.onlineDot} />
+                <Text style={styles.statusText}>Online</Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
 
-      {/* Messages */}
-      <FlatList
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.messagesList}
-        showsVerticalScrollIndicator={false}
-      />
+        <FlatList
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.messagesList}
+          showsVerticalScrollIndicator={false}
+        />
 
-      {/* Quick Prompts */}
-      {messages.length === 1 && (
-        <View style={styles.quickPromptsContainer}>
-          <Text style={styles.quickPromptsTitle}>Quick prompts:</Text>
-          <View style={styles.quickPrompts}>
-            {quickPrompts.map((prompt, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.quickPrompt}
-                onPress={() => setInputText(prompt)}
-              >
-                <Text style={styles.quickPromptText}>{prompt}</Text>
-              </TouchableOpacity>
-            ))}
+        {messages.length === 1 && (
+          <View style={styles.quickPromptsContainer}>
+            <Text style={styles.quickPromptsTitle}>Quick prompts</Text>
+            <View style={styles.quickPrompts}>
+              {quickPrompts.map((prompt, index) => (
+                <HapticPressable key={index} onPress={() => setInputText(prompt)}>
+                  <View style={styles.quickPrompt}>
+                    <Text style={styles.quickPromptText}>{prompt}</Text>
+                  </View>
+                </HapticPressable>
+              ))}
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
-      {/* Input Area */}
-      <View style={styles.inputContainer}>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            placeholder="Ask me anything about your health..."
-            value={inputText}
-            onChangeText={setInputText}
-            multiline
-            maxLength={500}
-          />
-          <TouchableOpacity
-            style={[
-              styles.sendButton,
-              inputText.trim() === '' && styles.sendButtonDisabled,
-            ]}
-            onPress={sendMessage}
-            disabled={inputText.trim() === ''}
-          >
-            <Ionicons
-              name="send"
-              size={20}
-              color={inputText.trim() === '' ? '#94A3B8' : '#fff'}
+        <View style={styles.inputContainer}>
+          <GlassCard style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Ask me anything about your health..."
+              placeholderTextColor={FuturisticTheme.colors.muted}
+              value={inputText}
+              onChangeText={setInputText}
+              multiline
+              maxLength={500}
             />
-          </TouchableOpacity>
+            <HapticPressable
+              style={[
+                styles.sendButtonWrap,
+                inputText.trim() === '' && styles.sendButtonWrapDisabled,
+              ]}
+              onPress={sendMessage}
+              disabled={inputText.trim() === ''}
+            >
+              <View
+                style={[
+                  styles.sendButton,
+                  inputText.trim() === '' && styles.sendButtonDisabled,
+                ]}
+              >
+                <Ionicons
+                  name="send"
+                  size={18}
+                  color={inputText.trim() === '' ? FuturisticTheme.colors.muted : '#02161b'}
+                />
+              </View>
+            </HapticPressable>
+          </GlassCard>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </FuturisticScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    paddingTop: 56,
   },
   header: {
-    backgroundColor: '#fff',
-    paddingTop: 60,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    paddingHorizontal: 16,
+    marginBottom: 8,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
+  headerHalo: {
+    borderRadius: 999,
+  },
   headerIcon: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: 'rgba(0, 180, 220, 0.14)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 180, 220, 0.2)',
   },
   headerTitle: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
     fontSize: 18,
     fontWeight: '700',
-    color: '#0F172A',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
   },
   statusIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 2,
+    marginTop: 3,
   },
   onlineDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#10B981',
+    backgroundColor: FuturisticTheme.colors.tint,
   },
   statusText: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 12,
-    color: '#64748B',
   },
   messagesList: {
     padding: 16,
@@ -244,60 +256,69 @@ const styles = StyleSheet.create({
   aiMessage: {
     justifyContent: 'flex-start',
   },
+  aiAvatarHalo: {
+    marginRight: 8,
+    borderRadius: 999,
+  },
   aiAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#EFF6FF',
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(0, 180, 220, 0.14)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 8,
   },
   messageBubble: {
-    maxWidth: '75%',
-    padding: 12,
-    borderRadius: 16,
+    maxWidth: '78%',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 18,
+    borderWidth: 1,
   },
   userBubble: {
-    backgroundColor: '#0D9488',
-    borderBottomRightRadius: 4,
+    backgroundColor: 'rgba(0, 229, 196, 0.16)',
+    borderBottomRightRadius: 6,
+    borderColor: 'rgba(0, 229, 196, 0.28)',
   },
   aiBubble: {
-    backgroundColor: '#fff',
-    borderBottomLeftRadius: 4,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    backgroundColor: FuturisticTheme.colors.surface,
+    borderBottomLeftRadius: 6,
+    borderColor: FuturisticTheme.colors.border,
   },
   messageText: {
+    fontFamily: Fonts.sans,
     fontSize: 15,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   userText: {
-    color: '#fff',
+    color: FuturisticTheme.colors.text,
   },
   aiText: {
-    color: '#0F172A',
+    color: FuturisticTheme.colors.text,
   },
   timestamp: {
+    fontFamily: Fonts.sans,
     fontSize: 11,
-    marginTop: 4,
+    marginTop: 6,
   },
   userTimestamp: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: FuturisticTheme.colors.muted,
     textAlign: 'right',
   },
   aiTimestamp: {
-    color: '#94A3B8',
+    color: FuturisticTheme.colors.muted,
   },
   quickPromptsContainer: {
-    padding: 16,
-    paddingTop: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
   },
   quickPromptsTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#64748B',
-    marginBottom: 12,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 11,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
+    marginBottom: 10,
   },
   quickPrompts: {
     flexDirection: 'row',
@@ -305,47 +326,56 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   quickPrompt: {
-    backgroundColor: '#fff',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    backgroundColor: FuturisticTheme.colors.surface,
+    paddingVertical: 9,
+    paddingHorizontal: 14,
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: FuturisticTheme.colors.border,
   },
   quickPromptText: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 14,
-    color: '#475569',
   },
   inputContainer: {
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 18,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    gap: 8,
+    gap: 12,
+    padding: 12,
   },
   input: {
     flex: 1,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 15,
-    color: '#0F172A',
     maxHeight: 100,
+    minHeight: 42,
+  },
+  sendButtonWrap: {
+    borderRadius: 999,
+  },
+  sendButtonWrapDisabled: {
+    opacity: 0.75,
   },
   sendButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#0D9488',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: FuturisticTheme.colors.tint,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#00e5c4',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.42,
+    shadowRadius: 16,
   },
   sendButtonDisabled: {
-    backgroundColor: '#E2E8F0',
+    backgroundColor: 'rgba(0, 229, 196, 0.18)',
+    shadowOpacity: 0,
   },
 });

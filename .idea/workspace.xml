@@ -6,19 +6,22 @@
   <component name="ChangeListManager">
     <list default="true" id="dfca2d6f-7f47-4e14-a7dd-9733c77aa630" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/ai-chat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/ai-chat.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/home.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/Auth/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/Auth/login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/glucose/history.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/glucose/history.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/log.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/log.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mobile/app/glucose/log-reading.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/glucose/log-reading.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mobile/app/meals/add-meal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/meals/add-meal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/meals/history.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/meals/history.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/app/medication/add-medication.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/medication/add-medication.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mobile/app/medication/list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/medication/list.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mobile/app/medication/reminders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/medication/reminders.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/components/ErrorBoundary.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/components/ErrorBoundary.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/store/authStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/store/authStore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/store/themeStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/store/themeStore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/components/themed-text.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/components/themed-text.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/components/themed-view.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/components/themed-view.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/constants/theme.ts" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/constants/theme.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dilog/backend/config/DatabaseCompatibilityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dilog/backend/config/DatabaseCompatibilityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dilog/backend/entity/Meal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dilog/backend/entity/Meal.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +86,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "ui-redesign",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",

@@ -1,19 +1,22 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Switch,
-  useColorScheme,
-  Alert,
-} from 'react-native';
 import { useState, useEffect } from 'react';
+import {
+  Alert,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAuthStore } from '@/store/authStore';
 import { create } from 'zustand';
+
+import { useAuthStore } from '@/store/authStore';
+import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { FuturisticScreen } from '@/components/ui/futuristic-screen';
+import { GlassCard } from '@/components/ui/glass-card';
+import { HapticPressable } from '@/components/ui/haptic-pressable';
+import { PulseHalo } from '@/components/ui/animated-metrics';
 
 interface ThemeStore {
   isDarkMode: boolean;
@@ -27,30 +30,9 @@ const useThemeStore = create<ThemeStore>((set) => ({
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const systemColorScheme = useColorScheme();
   const { isDarkMode, setDarkMode } = useThemeStore();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { user, logout } = useAuthStore();
-  const colorScheme = isDarkMode ? 'dark' : systemColorScheme;
-
-  const theme = {
-    light: {
-      background: '#FFFFFF',
-      text: '#1F2937',
-      textSecondary: '#6B7280',
-      border: '#E5E7EB',
-      card: '#F9FAFB',
-      teal: '#0D9488',
-    },
-    dark: {
-      background: '#111827',
-      text: '#F3F4F6',
-      textSecondary: '#D1D5DB',
-      border: '#374151',
-      card: '#1F2937',
-      teal: '#14B8A6',
-    },
-  }[colorScheme || 'light'];
 
   useEffect(() => {
     const loadTheme = async () => {
@@ -90,141 +72,157 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+    <FuturisticScreen scrollable contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>Profile</Text>
+        <Text style={styles.headerTitle}>Profile</Text>
       </View>
 
-      {/* User Info Card */}
-      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+      <GlassCard style={styles.card}>
         <View style={styles.avatarContainer}>
-          <View style={[styles.avatar, { backgroundColor: theme.teal }]}>
-            <Ionicons name="person" size={32} color="#FFFFFF" />
-          </View>
-        </View>
-        <Text style={[styles.userName, { color: theme.text }]}>{user?.fullName || 'User'}</Text>
-        <Text style={[styles.userEmail, { color: theme.textSecondary }]}>{user?.email || 'email@example.com'}</Text>
-      </View>
-
-      {/* Settings Section */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Settings</Text>
-
-        {/* Dark Mode Toggle */}
-        <View style={[styles.settingItem, { borderBottomColor: theme.border }]}>
-          <View style={styles.settingLeft}>
-            <Ionicons name="moon" size={20} color={theme.teal} />
-            <View style={styles.settingInfo}>
-              <Text style={[styles.settingLabel, { color: theme.text }]}>Dark Mode</Text>
-              <Text style={[styles.settingDescription, { color: theme.textSecondary }]}>
-                {isDarkMode ? 'Enabled' : 'Disabled'}
-              </Text>
+          <PulseHalo style={styles.avatarHalo}>
+            <View style={styles.avatar}>
+              <Ionicons name="person" size={32} color="#031217" />
             </View>
-          </View>
-          <Switch
-            value={isDarkMode}
-            onValueChange={handleDarkModeToggle}
-            trackColor={{ false: '#ccc', true: theme.teal }}
-          />
+          </PulseHalo>
         </View>
+        <Text style={styles.userName}>{user?.fullName || 'User'}</Text>
+        <Text style={styles.userEmail}>{user?.email || 'email@example.com'}</Text>
+      </GlassCard>
 
-        {/* Notifications Toggle */}
-        <View style={[styles.settingItem, { borderBottomColor: theme.border }]}>
-          <View style={styles.settingLeft}>
-            <Ionicons name="notifications" size={20} color={theme.teal} />
-            <View style={styles.settingInfo}>
-              <Text style={[styles.settingLabel, { color: theme.text }]}>Notifications</Text>
-              <Text style={[styles.settingDescription, { color: theme.textSecondary }]}>
-                {notificationsEnabled ? 'Enabled' : 'Disabled'}
-              </Text>
-            </View>
-          </View>
-          <Switch
-            value={notificationsEnabled}
-            onValueChange={setNotificationsEnabled}
-            trackColor={{ false: '#ccc', true: theme.teal }}
-          />
-        </View>
-      </View>
-
-      {/* About Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>About</Text>
-        <TouchableOpacity style={[styles.settingItem, { borderBottomColor: theme.border }]}>
-          <Text style={[styles.settingLabel, { color: theme.text }]}>App Version</Text>
-          <Text style={[styles.versionText, { color: theme.textSecondary }]}>1.0.0</Text>
-        </TouchableOpacity>
+        <Text style={styles.sectionTitle}>Settings</Text>
+        <GlassCard style={styles.sectionCard}>
+          <View style={styles.settingItem}>
+            <View style={styles.settingLeft}>
+              <View style={styles.settingIcon}>
+                <Ionicons name="moon" size={18} color={FuturisticTheme.colors.tint} />
+              </View>
+              <View style={styles.settingInfo}>
+                <Text style={styles.settingLabel}>Dark Mode</Text>
+                <Text style={styles.settingDescription}>
+                  {isDarkMode ? 'Enabled' : 'Disabled'}
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={isDarkMode}
+              onValueChange={handleDarkModeToggle}
+              trackColor={{ false: 'rgba(0, 229, 196, 0.2)', true: FuturisticTheme.colors.tint }}
+              thumbColor="#031217"
+            />
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.settingItem}>
+            <View style={styles.settingLeft}>
+              <View style={styles.settingIcon}>
+                <Ionicons name="notifications" size={18} color={FuturisticTheme.colors.tint} />
+              </View>
+              <View style={styles.settingInfo}>
+                <Text style={styles.settingLabel}>Notifications</Text>
+                <Text style={styles.settingDescription}>
+                  {notificationsEnabled ? 'Enabled' : 'Disabled'}
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={notificationsEnabled}
+              onValueChange={setNotificationsEnabled}
+              trackColor={{ false: 'rgba(0, 229, 196, 0.2)', true: FuturisticTheme.colors.tint }}
+              thumbColor="#031217"
+            />
+          </View>
+        </GlassCard>
       </View>
 
-      {/* Logout Button */}
-      <TouchableOpacity
-        style={[styles.logoutButton, { backgroundColor: '#EF4444' }]}
-        onPress={handleLogout}
-      >
-        <Ionicons name="log-out" size={18} color="#FFFFFF" />
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>About</Text>
+        <GlassCard style={styles.sectionCard}>
+          <View style={styles.settingItem}>
+            <Text style={styles.settingLabel}>App Version</Text>
+            <Text style={styles.versionText}>1.0.0</Text>
+          </View>
+        </GlassCard>
+      </View>
 
-      <View style={{ height: 40 }} />
-    </ScrollView>
+      <HapticPressable onPress={handleLogout}>
+        <GlassCard style={styles.logoutButton}>
+          <Ionicons name="log-out" size={18} color="#ff7b8d" />
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </GlassCard>
+      </HapticPressable>
+    </FuturisticScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  contentContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 56,
+    paddingBottom: 120,
   },
   header: {
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingHorizontal: 16,
+    marginBottom: 18,
   },
   headerTitle: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
     fontSize: 28,
     fontWeight: '700',
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
   },
   card: {
-    marginHorizontal: 16,
-    marginBottom: 24,
-    padding: 20,
-    borderRadius: 12,
-    borderWidth: 1,
     alignItems: 'center',
+    marginBottom: 24,
   },
   avatarContainer: {
     marginBottom: 16,
   },
+  avatarHalo: {
+    borderRadius: 999,
+  },
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: FuturisticTheme.colors.tint,
   },
   userName: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 1.1,
     marginBottom: 4,
   },
   userEmail: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 14,
   },
   section: {
     marginBottom: 24,
-    paddingHorizontal: 16,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 12,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    letterSpacing: 2.1,
     textTransform: 'uppercase',
+    marginBottom: 12,
+  },
+  sectionCard: {
+    paddingVertical: 10,
   },
   settingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
+    paddingVertical: 12,
   },
   settingLeft: {
     flexDirection: 'row',
@@ -232,35 +230,53 @@ const styles = StyleSheet.create({
     gap: 12,
     flex: 1,
   },
+  settingIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: 'rgba(0, 229, 196, 0.12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   settingInfo: {
     flex: 1,
   },
   settingLabel: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '700',
     marginBottom: 2,
   },
   settingDescription: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 13,
   },
   versionText: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
     fontSize: 14,
+    letterSpacing: 1.3,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(0, 229, 196, 0.08)',
   },
   logoutButton: {
-    marginHorizontal: 16,
-    marginBottom: 20,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    backgroundColor: 'rgba(255, 95, 122, 0.12)',
+    borderColor: 'rgba(255, 95, 122, 0.28)',
   },
   logoutButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#ff7b8d',
+    fontFamily: Fonts.mono,
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
   },
 });
-

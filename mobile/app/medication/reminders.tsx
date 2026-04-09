@@ -1,14 +1,12 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Switch,
-  Platform,
-} from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
+import { FlatList, StyleSheet, Switch, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+
+import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { FuturisticScreen } from '@/components/ui/futuristic-screen';
+import { GlassCard } from '@/components/ui/glass-card';
+import { HapticPressable } from '@/components/ui/haptic-pressable';
 
 interface Reminder {
   id: string;
@@ -20,6 +18,7 @@ interface Reminder {
 }
 
 export default function RemindersScreen() {
+  const router = useRouter();
   const [reminders, setReminders] = useState<Reminder[]>([
     {
       id: '1',
@@ -48,11 +47,7 @@ export default function RemindersScreen() {
   ]);
 
   const toggleReminder = (id: string) => {
-    setReminders(
-      reminders.map((r) =>
-        r.id === id ? { ...r, completed: !r.completed } : r
-      )
-    );
+    setReminders(reminders.map((r) => (r.id === id ? { ...r, completed: !r.completed } : r)));
   };
 
   const toggleNotifications = (id: string) => {
@@ -64,10 +59,10 @@ export default function RemindersScreen() {
   };
 
   const renderReminder = ({ item }: { item: Reminder }) => (
-    <View style={styles.reminderCard}>
+    <GlassCard style={styles.reminderCard}>
       <View style={styles.reminderContent}>
         <View style={styles.timeSection}>
-          <MaterialIcons name="schedule" size={24} color="#007AFF" />
+          <MaterialIcons name="schedule" size={24} color={FuturisticTheme.colors.tint} />
           <Text style={styles.time}>{item.time}</Text>
         </View>
         <View style={styles.medicationSection}>
@@ -76,119 +71,130 @@ export default function RemindersScreen() {
         </View>
       </View>
       <View style={styles.actions}>
-        <TouchableOpacity
-          onPress={() => toggleReminder(item.id)}
-          style={[
-            styles.checkButton,
-            item.completed && styles.checkButtonActive,
-          ]}
-        >
-          <MaterialIcons
-            name={item.completed ? 'check-circle' : 'radio-button-unchecked'}
-            size={24}
-            color={item.completed ? '#34C759' : '#999'}
-          />
-        </TouchableOpacity>
+        <HapticPressable onPress={() => toggleReminder(item.id)}>
+          <View style={styles.checkButton}>
+            <MaterialIcons
+              name={item.completed ? 'check-circle' : 'radio-button-unchecked'}
+              size={24}
+              color={item.completed ? FuturisticTheme.colors.tint : FuturisticTheme.colors.muted}
+            />
+          </View>
+        </HapticPressable>
         <Switch
           value={item.notificationsEnabled}
           onValueChange={() => toggleNotifications(item.id)}
+          trackColor={{ false: 'rgba(0,229,196,0.2)', true: FuturisticTheme.colors.tint }}
+          thumbColor="#031217"
         />
       </View>
-    </View>
+    </GlassCard>
   );
 
   return (
-    <View style={styles.container}>
+    <FuturisticScreen contentContainerStyle={styles.container}>
       <View style={styles.header}>
+        <HapticPressable onPress={() => router.back()}>
+          <View style={styles.iconButton}>
+            <MaterialIcons name="arrow-back" size={20} color={FuturisticTheme.colors.text} />
+          </View>
+        </HapticPressable>
         <Text style={styles.headerTitle}>Medication Reminders</Text>
+        <View style={styles.headerSpacer} />
       </View>
       <FlatList
         data={reminders}
         renderItem={renderReminder}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
       />
-    </View>
+    </FuturisticScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    paddingTop: 56,
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
+    marginBottom: 18,
+  },
+  iconButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: FuturisticTheme.colors.surface,
+    borderWidth: 1,
+    borderColor: FuturisticTheme.colors.border,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000',
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+  },
+  headerSpacer: {
+    width: 42,
   },
   listContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingBottom: 40,
   },
   reminderCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    ...Platform.select({
-      web: {
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      },
-      default: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-    }),
-    elevation: 3,
   },
   reminderContent: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    paddingRight: 10,
   },
   timeSection: {
     alignItems: 'center',
     gap: 4,
+    minWidth: 64,
   },
   time: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#007AFF',
+    color: FuturisticTheme.colors.tint,
+    fontFamily: Fonts.mono,
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   medicationSection: {
     flex: 1,
   },
   medicationName: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
+    fontWeight: '700',
   },
   dosage: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 13,
-    color: '#666',
     marginTop: 2,
   },
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   checkButton: {
     padding: 4,
-  },
-  checkButtonActive: {
-    opacity: 1,
   },
 });

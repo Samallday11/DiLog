@@ -1,222 +1,234 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  Platform,
-} from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+
+import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { FuturisticScreen } from '@/components/ui/futuristic-screen';
+import { GlassCard } from '@/components/ui/glass-card';
+import { HapticPressable } from '@/components/ui/haptic-pressable';
+import { BlinkIndicator, CountUpText, PulseHalo } from '@/components/ui/animated-metrics';
 
 export default function HomeScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <FuturisticScreen scrollable contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/50' }}
-            style={styles.avatar}
-          />
+          <PulseHalo style={styles.avatarHalo}>
+            <View style={styles.avatarFrame}>
+              <Image
+                source={{ uri: 'https://via.placeholder.com/50' }}
+                style={styles.avatar}
+              />
+            </View>
+          </PulseHalo>
           <View>
-            <Text style={styles.welcomeText}>Welcome back,</Text>
+            <Text style={styles.welcomeText}>WELCOME BACK</Text>
             <Text style={styles.userName}>Alex Rivera</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color="#fff" />
-        </TouchableOpacity>
+        <HapticPressable style={styles.notificationOuter}>
+          <View style={styles.notificationButton}>
+            <Ionicons name="notifications-outline" size={22} color={FuturisticTheme.colors.text} />
+            <BlinkIndicator style={styles.notificationDot} />
+          </View>
+        </HapticPressable>
       </View>
 
-      <View style={styles.card}>
+      <GlassCard style={styles.heroCard}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>LATEST GLUCOSE</Text>
+          <Text style={styles.cardTitle}>Latest Glucose</Text>
           <View style={styles.statusBadge}>
-            <View style={styles.statusDot} />
+            <BlinkIndicator style={styles.statusDot} />
             <Text style={styles.statusText}>In Range</Text>
           </View>
         </View>
 
         <View style={styles.glucoseReading}>
-          <Text style={styles.glucoseValue}>110</Text>
+          <CountUpText value={110} style={styles.glucoseValue} />
           <Text style={styles.glucoseUnit}>mg/dL</Text>
         </View>
 
-        <View style={styles.miniChart}>
-          {[60, 75, 70, 85, 90, 100].map((height, index) => (
-            <View
-              key={index}
-              style={[
-                styles.chartBar,
-                {
-                  height,
-                  backgroundColor:
-                    index === 5 ? '#0D9488' : 'rgba(13, 148, 136, 0.3)',
-                },
-              ]}
-            />
-          ))}
+        <View style={styles.chartShell}>
+          <View style={styles.chartGlow} />
+          <View style={styles.miniChart}>
+            {[60, 75, 70, 85, 90, 100].map((height, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.chartBar,
+                  {
+                    height,
+                    backgroundColor:
+                      index === 5 ? FuturisticTheme.colors.tint : 'rgba(0, 229, 196, 0.18)',
+                  },
+                ]}
+              />
+            ))}
+          </View>
         </View>
 
         <View style={styles.cardFooter}>
           <View style={styles.timeStamp}>
-            <Ionicons name="time-outline" size={16} color="#64748B" />
+            <Ionicons name="time-outline" size={16} color={FuturisticTheme.colors.muted} />
             <Text style={styles.timeText}>6 hours ago</Text>
           </View>
-          <TouchableOpacity onPress={() => router.push('/glucose/history')}>
-            <Text style={styles.linkText}>View History →</Text>
-          </TouchableOpacity>
+          <HapticPressable onPress={() => router.push('/glucose/history')}>
+            <Text style={styles.linkText}>View History</Text>
+          </HapticPressable>
         </View>
-      </View>
+      </GlassCard>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>QUICK ACTIONS</Text>
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.quickActions}>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.primaryAction]}
-            onPress={() => router.push('/glucose/log-reading')}
-          >
-            <Ionicons name="water" size={28} color="#fff" />
-            <Text style={styles.actionTextPrimary}>Log Glucose</Text>
-          </TouchableOpacity>
+          <HapticPressable style={styles.actionWrap} onPress={() => router.push('/glucose/log-reading')}>
+            <GlassCard style={[styles.actionButton, styles.primaryAction]}>
+              <Ionicons name="water" size={28} color={FuturisticTheme.colors.text} />
+              <Text style={styles.actionTextPrimary}>Log Glucose</Text>
+            </GlassCard>
+          </HapticPressable>
 
-          <TouchableOpacity
-            style={[styles.actionButton, styles.secondaryAction]}
-            onPress={() => router.push('/meals/add-meal')}
-          >
-            <Ionicons name="restaurant-outline" size={28} color="#0D9488" />
-            <Text style={styles.actionTextSecondary}>Add Meal</Text>
-          </TouchableOpacity>
+          <HapticPressable style={styles.actionWrap} onPress={() => router.push('/meals/add-meal')}>
+            <GlassCard style={styles.actionButton}>
+              <Ionicons name="restaurant-outline" size={28} color={FuturisticTheme.colors.tint} />
+              <Text style={styles.actionTextSecondary}>Add Meal</Text>
+            </GlassCard>
+          </HapticPressable>
 
-          <TouchableOpacity
-            style={[styles.actionButton, styles.secondaryAction]}
-            onPress={() => router.push('/medication/list')}
-          >
-            <Ionicons name="medical-outline" size={28} color="#0D9488" />
-            <Text style={styles.actionTextSecondary}>Meds</Text>
-          </TouchableOpacity>
+          <HapticPressable style={styles.actionWrap} onPress={() => router.push('/medication/list')}>
+            <GlassCard style={styles.actionButton}>
+              <Ionicons name="medical-outline" size={28} color={FuturisticTheme.colors.tint} />
+              <Text style={styles.actionTextSecondary}>Meds</Text>
+            </GlassCard>
+          </HapticPressable>
         </View>
       </View>
 
-      <TouchableOpacity
-        style={styles.reminderCard}
-        onPress={() => router.push('/medication/reminders')}
-      >
-        <View style={styles.reminderLeft}>
-          <View style={styles.reminderIcon}>
-            <Ionicons name="notifications" size={24} color="#F59E0B" />
+      <HapticPressable onPress={() => router.push('/medication/reminders')}>
+        <GlassCard style={styles.reminderCard}>
+          <View style={styles.reminderLeft}>
+            <View style={styles.reminderIcon}>
+              <Ionicons name="notifications" size={24} color="#f59e0b" />
+            </View>
+            <View>
+              <Text style={styles.reminderTitle}>Upcoming Reminder</Text>
+              <Text style={styles.reminderText}>Evening Insulin in 15 mins</Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.reminderTitle}>UPCOMING REMINDER</Text>
-            <Text style={styles.reminderText}>Evening Insulin in 15 mins</Text>
-          </View>
-        </View>
-        <Ionicons name="chevron-forward" size={20} color="#92400E" />
-      </TouchableOpacity>
+          <Ionicons name="chevron-forward" size={20} color={FuturisticTheme.colors.tint} />
+        </GlassCard>
+      </HapticPressable>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>DAILY PROGRESS</Text>
+        <Text style={styles.sectionTitle}>Daily Progress</Text>
         <View style={styles.progressCards}>
-          <View style={styles.progressCard}>
+          <GlassCard style={styles.progressCard}>
             <View style={styles.progressCircle}>
-              <Text style={styles.progressPercentage}>80%</Text>
+              <CountUpText value={80} suffix="%" style={styles.progressPercentage} />
             </View>
             <Text style={styles.progressTitle}>Activity</Text>
             <Text style={styles.progressSubtitle}>8k / 10k steps</Text>
-          </View>
+          </GlassCard>
 
-          <View style={styles.progressCard}>
+          <GlassCard style={styles.progressCard}>
             <View style={[styles.progressCircle, styles.progressCircleBlue]}>
-              <Text style={styles.progressPercentage}>60%</Text>
+              <CountUpText value={60} suffix="%" style={styles.progressPercentage} />
             </View>
             <Text style={styles.progressTitle}>Hydration</Text>
             <Text style={styles.progressSubtitle}>1.5L / 2.5L</Text>
-          </View>
+          </GlassCard>
         </View>
       </View>
 
-      <View style={styles.aiInsightCard}>
+      <GlassCard style={styles.aiInsightCard}>
         <View style={styles.aiInsightHeader}>
           <View style={styles.aiIcon}>
-            <Ionicons name="sparkles" size={20} color="#3B82F6" />
+            <Ionicons name="sparkles" size={18} color={FuturisticTheme.colors.accentBlue} />
           </View>
-          <Text style={styles.aiInsightTitle}>AI INSIGHT</Text>
-          <Text style={styles.aiInsightTime}>• Just Now</Text>
+          <Text style={styles.aiInsightTitle}>AI Insight</Text>
+          <Text style={styles.aiInsightTime}>Just now</Text>
         </View>
         <Text style={styles.aiInsightText}>
-          Your glucose levels are <Text style={styles.aiHighlight}>stable</Text>{' '}
-          after breakfast. Keep up the high-fiber choices!
+          Your glucose levels are <Text style={styles.aiHighlight}>stable</Text> after breakfast.
+          Keep up the high-fiber choices.
         </Text>
-      </View>
-
-      <View style={{ height: 100 }} />
-    </ScrollView>
+      </GlassCard>
+    </FuturisticScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F1F5F9',
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingTop: 56,
+    paddingBottom: 120,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#0D9488',
-    padding: 20,
-    paddingTop: 60,
-    paddingBottom: 24,
+    marginBottom: 20,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
+  },
+  avatarHalo: {
+    borderRadius: 999,
+  },
+  avatarFrame: {
+    padding: 3,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0, 180, 220, 0.22)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 229, 196, 0.4)',
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#fff',
+    width: 52,
+    height: 52,
+    borderRadius: 26,
   },
   welcomeText: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 14,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 11,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
   },
   userName: {
-    color: '#fff',
-    fontSize: 20,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
+    fontSize: 22,
     fontWeight: '700',
+    letterSpacing: 1.1,
+  },
+  notificationOuter: {
+    borderRadius: 999,
   },
   notificationButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: FuturisticTheme.colors.surface,
+    borderWidth: 1,
+    borderColor: FuturisticTheme.colors.border,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  card: {
-    backgroundColor: '#89c7dc',
-    borderRadius: 16,
-    padding: 20,
-    margin: 16,
-    marginTop: -20,
-    ...Platform.select({
-      web: {
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-      },
-      default: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-    }),
-    elevation: 3,
+  notificationDot: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#ff5f7a',
+  },
+  heroCard: {
+    marginBottom: 20,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -225,57 +237,71 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   cardTitle: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
     fontSize: 12,
-    fontWeight: '700',
-    color: '#5c8fd6',
-    letterSpacing: 0.5,
+    letterSpacing: 2.2,
+    textTransform: 'uppercase',
   },
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#D1FAE5',
+    gap: 8,
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    gap: 6,
+    paddingVertical: 7,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0, 229, 196, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 229, 196, 0.18)',
   },
   statusDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#0D9488',
+    backgroundColor: FuturisticTheme.colors.tint,
   },
   statusText: {
-    color: '#0D9488',
-    fontSize: 12,
+    color: FuturisticTheme.colors.tint,
+    fontFamily: Fonts.sans,
     fontWeight: '600',
   },
   glucoseReading: {
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'flex-end',
     marginBottom: 20,
   },
   glucoseValue: {
-    fontSize: 56,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
+    fontSize: 58,
     fontWeight: '800',
-    color: '#0F172A',
+    letterSpacing: 2,
   },
   glucoseUnit: {
+    marginLeft: 8,
+    marginBottom: 10,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 18,
-    color: '#64748B',
-    marginLeft: 4,
+  },
+  chartShell: {
+    marginBottom: 18,
+  },
+  chartGlow: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 180, 220, 0.06)',
   },
   miniChart: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    height: 100,
-    marginBottom: 16,
-    gap: 8,
+    height: 112,
+    gap: 10,
   },
   chartBar: {
     flex: 1,
-    borderRadius: 4,
+    borderRadius: 999,
   },
   cardFooter: {
     flexDirection: 'row',
@@ -288,64 +314,63 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   timeText: {
-    color: '#64748B',
-    fontSize: 14,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
   },
   linkText: {
-    color: '#0D9488',
-    fontSize: 14,
-    fontWeight: '600',
+    color: FuturisticTheme.colors.tint,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    letterSpacing: 1.6,
+    textTransform: 'uppercase',
   },
   section: {
-    marginHorizontal: 16,
-    marginTop: 24,
+    marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#64748B',
-    letterSpacing: 0.5,
     marginBottom: 12,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    letterSpacing: 2.2,
+    textTransform: 'uppercase',
   },
   quickActions: {
     flexDirection: 'row',
     gap: 12,
   },
-  actionButton: {
+  actionWrap: {
     flex: 1,
-    aspectRatio: 1,
-    borderRadius: 16,
+  },
+  actionButton: {
+    minHeight: 126,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
+    paddingHorizontal: 10,
   },
   primaryAction: {
-    backgroundColor: '#0D9488',
-  },
-  secondaryAction: {
-    backgroundColor: '#E0F2F1',
+    backgroundColor: 'rgba(0, 229, 196, 0.14)',
   },
   actionTextPrimary: {
-    color: '#fff',
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+    textAlign: 'center',
   },
   actionTextSecondary: {
-    color: '#0D9488',
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+    textAlign: 'center',
   },
   reminderCard: {
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FEF3C7',
-    borderRadius: 16,
-    padding: 16,
-    marginHorizontal: 16,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: '#FDE68A',
   },
   reminderLeft: {
     flexDirection: 'row',
@@ -355,22 +380,24 @@ const styles = StyleSheet.create({
   reminderIcon: {
     width: 48,
     height: 48,
-    borderRadius: 12,
-    backgroundColor: '#FDE68A',
-    justifyContent: 'center',
+    borderRadius: 16,
+    backgroundColor: 'rgba(245, 158, 11, 0.14)',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   reminderTitle: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#92400E',
-    letterSpacing: 0.5,
+    color: '#fbbf24',
+    fontFamily: Fonts.mono,
+    fontSize: 11,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
   },
   reminderText: {
-    fontSize: 14,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#78350F',
-    marginTop: 2,
+    marginTop: 4,
   },
   progressCards: {
     flexDirection: 'row',
@@ -378,92 +405,77 @@ const styles = StyleSheet.create({
   },
   progressCard: {
     flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
     alignItems: 'center',
-    ...Platform.select({
-      web: {
-        boxShadow: '0 1px 4px rgba(0, 0, 0, 0.05)',
-      },
-      default: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-      },
-    }),
-    elevation: 2,
   },
   progressCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 104,
+    height: 104,
+    borderRadius: 52,
     borderWidth: 8,
-    borderColor: '#0D9488',
+    borderColor: 'rgba(0, 229, 196, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F1F5F9',
-    marginBottom: 12,
+    backgroundColor: 'rgba(0, 229, 196, 0.06)',
+    marginBottom: 14,
   },
   progressCircleBlue: {
-    borderColor: '#3B82F6',
+    borderColor: FuturisticTheme.colors.accentBlue,
   },
   progressPercentage: {
-    fontSize: 24,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
+    fontSize: 22,
     fontWeight: '800',
-    color: '#0F172A',
   },
   progressTitle: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
     fontSize: 16,
-    fontWeight: '600',
-    color: '#0F172A',
+    fontWeight: '700',
     marginBottom: 4,
   },
   progressSubtitle: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
     fontSize: 13,
-    color: '#64748B',
   },
   aiInsightCard: {
-    backgroundColor: '#EFF6FF',
-    borderRadius: 16,
-    padding: 16,
-    marginHorizontal: 16,
-    marginTop: 24,
-    borderWidth: 1,
-    borderColor: '#DBEAFE',
+    marginBottom: 4,
   },
   aiInsightHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
     gap: 8,
+    marginBottom: 10,
   },
   aiIcon: {
     width: 32,
     height: 32,
-    borderRadius: 8,
-    backgroundColor: '#DBEAFE',
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 180, 220, 0.12)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   aiInsightTitle: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#1E40AF',
-    letterSpacing: 0.5,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
   },
   aiInsightTime: {
-    fontSize: 10,
-    color: '#60A5FA',
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
+    fontSize: 12,
   },
   aiInsightText: {
-    fontSize: 14,
-    color: '#1E3A8A',
-    lineHeight: 20,
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
+    fontSize: 15,
+    lineHeight: 22,
   },
   aiHighlight: {
+    color: FuturisticTheme.colors.tint,
     fontWeight: '700',
-    color: '#0D9488',
   },
 });
