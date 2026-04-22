@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface GlucoseEntryRepository extends JpaRepository<GlucoseEntry, Long> {
-    List<GlucoseEntry> findTop30ByUserIdOrderByTimestampDesc(Long userId);
+    List<GlucoseEntry> findByUserIdOrderByTimestampDesc(Long userId);
 }

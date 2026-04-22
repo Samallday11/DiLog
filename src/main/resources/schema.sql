@@ -34,6 +34,25 @@ CREATE TABLE meals (
     logged_at TIMESTAMP NOT NULL
 );
 
+CREATE TABLE medications (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    medication_name VARCHAR(255) NOT NULL,
+    dosage VARCHAR(100) NOT NULL,
+    time_taken TIMESTAMP NOT NULL,
+    route VARCHAR(80),
+    notes VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE activities (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    activity_type VARCHAR(80) NOT NULL,
+    description VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE meal_glucose_map (
     id SERIAL PRIMARY KEY,
     meal_id INT REFERENCES meals(id),

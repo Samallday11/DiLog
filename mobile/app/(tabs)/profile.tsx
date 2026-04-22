@@ -17,6 +17,7 @@ import { FuturisticScreen } from '@/components/ui/futuristic-screen';
 import { GlassCard } from '@/components/ui/glass-card';
 import { HapticPressable } from '@/components/ui/haptic-pressable';
 import { PulseHalo } from '@/components/ui/animated-metrics';
+import { getUserDisplayName } from '@/lib/userDisplay';
 
 interface ThemeStore {
   isDarkMode: boolean;
@@ -33,6 +34,7 @@ export default function ProfileScreen() {
   const { isDarkMode, setDarkMode } = useThemeStore();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { user, logout } = useAuthStore();
+  const displayName = getUserDisplayName(user);
 
   useEffect(() => {
     const loadTheme = async () => {
@@ -85,8 +87,8 @@ export default function ProfileScreen() {
             </View>
           </PulseHalo>
         </View>
-        <Text style={styles.userName}>{user?.fullName || 'User'}</Text>
-        <Text style={styles.userEmail}>{user?.email || 'email@example.com'}</Text>
+        <Text style={styles.userName}>{displayName}</Text>
+        {user?.email ? <Text style={styles.userEmail}>{user.email}</Text> : null}
       </GlassCard>
 
       <View style={styles.section}>

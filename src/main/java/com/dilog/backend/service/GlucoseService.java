@@ -27,7 +27,7 @@ public class GlucoseService {
 
     @Transactional(readOnly = true)
     public List<GlucoseEntryResponse> getEntries(Long userId) {
-        return glucoseEntryRepository.findTop30ByUserIdOrderByTimestampDesc(userId)
+        return glucoseEntryRepository.findByUserIdOrderByTimestampDesc(userId)
                 .stream()
                 .map(this::toResponse)
                 .toList();

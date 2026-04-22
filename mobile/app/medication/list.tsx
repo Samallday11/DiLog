@@ -1,81 +1,99 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
 import { Fonts, FuturisticTheme } from '@/constants/theme';
 import { FuturisticScreen } from '@/components/ui/futuristic-screen';
 import { GlassCard } from '@/components/ui/glass-card';
 import { HapticPressable } from '@/components/ui/haptic-pressable';
-import { BlinkIndicator, CountUpText } from '@/components/ui/animated-metrics';
+import { CountUpText } from '@/components/ui/animated-metrics';
+import { fetchMedicationEntries, MedicationEntry } from '@/lib/healthApi';
+import { useAuthStore } from '@/store/authStore';
 
-interface Medication {
-  id: string;
-  name: string;
-  dosage: string;
-  frequency: string;
-  time: string[];
-  nextDose: string;
-  taken: boolean;
+function formatMedicationTime(value: string) {
+  return new Date(value).toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+function formatDayKey(value: string) {
+  const date = new Date(value);
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
 export default function MedicationListScreen() {
   const router = useRouter();
+  const isFocused = useIsFocused();
+  const user = useAuthStore((state) => state.user);
+  const [medications, setMedications] = useState<MedicationEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const medications: Medication[] = [
-    {
-      id: '1',
-      name: 'Insulin (Rapid-acting)',
-      dosage: '10 units',
-      frequency: 'With meals',
-      time: ['8:00 AM', '12:00 PM', '6:00 PM'],
-      nextDose: '6:00 PM',
-      taken: false,
-    },
-    {
-      id: '2',
-      name: 'Metformin',
-      dosage: '500mg',
-      frequency: 'Twice daily',
-      time: ['8:00 AM', '8:00 PM'],
-      nextDose: '8:00 PM',
-      taken: true,
-    },
-  ];
+  useEffect(() => {
+    const loadMedications = async () => {
+      if (!user?.id || !isFocused) {
+        setIsLoading(false);
+        return;
+      }
 
-  const renderMedication = ({ item }: { item: Medication }) => (
-    <HapticPressable style={styles.medCardWrap}>
+      try {
+        setIsLoading(true);
+        setError('');
+        const data = await fetchMedicationEntries(user.id);
+        setMedications(data);
+      } catch (loadError) {
+        setError(loadError instanceof Error ? loadError.message : 'Failed to load medications');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMedications();
+  }, [isFocused, user?.id]);
+
+  const stats = useMemo(() => {
+    const todayKey = formatDayKey(new Date().toISOString());
+    const takenToday = medications.filter((item) => formatDayKey(item.timeTaken) === todayKey).length;
+    const daysWithLogs = new Set(medications.map((item) => formatDayKey(item.timeTaken))).size;
+    const adherence = daysWithLogs === 0 ? 0 : Math.min(100, Math.round((takenToday / Math.max(1, daysWithLogs)) * 100));
+
+    return { takenToday, adherence };
+  }, [medications]);
+
+  const renderMedication = ({ item }: { item: MedicationEntry }) => (
+    <HapticPressable style={styles.medCardWrap} onPress={() => router.push('/medication/add-medication')}>
       <GlassCard style={styles.medCard}>
         <View style={styles.medHeader}>
           <View style={styles.medInfo}>
-            <Text style={styles.medName}>{item.name}</Text>
-            <Text style={styles.medDosage}>
-              {item.dosage} | {item.frequency}
-            </Text>
+            <Text style={styles.medName}>{item.medicationName}</Text>
+            <Text style={styles.medDosage}>{item.dosage}</Text>
           </View>
-          <View style={styles.checkButton}>
-            {item.taken ? (
-              <Ionicons name="checkmark-circle" size={28} color={FuturisticTheme.colors.tint} />
-            ) : (
-              <BlinkIndicator>
-                <Ionicons name="ellipse-outline" size={28} color={FuturisticTheme.colors.muted} />
-              </BlinkIndicator>
-            )}
+          <View style={styles.timePill}>
+            <Ionicons name="time-outline" size={14} color={FuturisticTheme.colors.tint} />
+            <Text style={styles.timePillText}>{formatMedicationTime(item.timeTaken)}</Text>
           </View>
         </View>
 
-        <View style={styles.timesContainer}>
-          {item.time.map((time, idx) => (
-            <View key={idx} style={styles.timeChip}>
-              <Ionicons name="time-outline" size={14} color={FuturisticTheme.colors.tint} />
-              <Text style={styles.timeText}>{time}</Text>
+        <View style={styles.metaRow}>
+          {item.route ? (
+            <View style={styles.metaChip}>
+              <Ionicons name="navigate-outline" size={14} color={FuturisticTheme.colors.tint} />
+              <Text style={styles.metaChipText}>{item.route}</Text>
             </View>
-          ))}
+          ) : (
+            <View style={styles.metaChip}>
+              <Ionicons name="medical-outline" size={14} color={FuturisticTheme.colors.tint} />
+              <Text style={styles.metaChipText}>Logged</Text>
+            </View>
+          )}
         </View>
 
-        <View style={styles.nextDose}>
-          <Ionicons name="notifications-outline" size={16} color="#f59e0b" />
-          <Text style={styles.nextDoseText}>Next dose: {item.nextDose}</Text>
-        </View>
+        {item.notes ? <Text style={styles.notes}>{item.notes}</Text> : null}
       </GlassCard>
     </HapticPressable>
   );
@@ -89,33 +107,50 @@ export default function MedicationListScreen() {
           </View>
         </HapticPressable>
         <Text style={styles.headerTitle}>Medications</Text>
-        <HapticPressable onPress={() => router.push('/medication/reminders')}>
+        <HapticPressable onPress={() => router.push('/medication/add-medication')}>
           <View style={styles.iconButton}>
-            <Ionicons name="settings-outline" size={20} color={FuturisticTheme.colors.text} />
+            <Ionicons name="add" size={20} color={FuturisticTheme.colors.text} />
           </View>
         </HapticPressable>
       </View>
 
-      <FlatList
-        data={medications}
-        renderItem={renderMedication}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <GlassCard style={styles.stats}>
-            <View style={styles.statItem}>
-              <CountUpText value={2} style={styles.statValue} />
-              <Text style={styles.statLabel}>Taken Today</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <CountUpText value={95} suffix="%" style={styles.statValue} />
-              <Text style={styles.statLabel}>Adherence</Text>
-            </View>
-          </GlassCard>
-        }
-      />
+      {isLoading ? (
+        <View style={styles.centerState}>
+          <ActivityIndicator color={FuturisticTheme.colors.tint} size="large" />
+        </View>
+      ) : error ? (
+        <View style={styles.centerState}>
+          <Text style={styles.stateText}>{error}</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={medications}
+          renderItem={renderMedication}
+          keyExtractor={(item) => String(item.id)}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <GlassCard style={styles.stats}>
+              <View style={styles.statItem}>
+                <CountUpText value={stats.takenToday} style={styles.statValue} />
+                <Text style={styles.statLabel}>Logged Today</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <CountUpText value={stats.adherence} suffix="%" style={styles.statValue} />
+                <Text style={styles.statLabel}>Daily Coverage</Text>
+              </View>
+            </GlassCard>
+          }
+          ListEmptyComponent={
+            <GlassCard style={styles.emptyCard}>
+              <Ionicons name="medical-outline" size={26} color={FuturisticTheme.colors.tint} />
+              <Text style={styles.emptyTitle}>No medication logs yet</Text>
+              <Text style={styles.stateText}>Create your first medication entry to start tracking.</Text>
+            </GlassCard>
+          }
+        />
+      )}
 
       <HapticPressable
         style={styles.fabWrap}
@@ -195,11 +230,10 @@ const styles = StyleSheet.create({
   medHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    gap: 12,
   },
   medInfo: {
     flex: 1,
-    paddingRight: 12,
   },
   medName: {
     color: FuturisticTheme.colors.text,
@@ -213,45 +247,70 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sans,
     fontSize: 14,
   },
-  checkButton: {
-    paddingTop: 2,
-  },
-  timesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 12,
-  },
-  timeChip: {
+  timePill: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    alignSelf: 'flex-start',
     backgroundColor: 'rgba(0,229,196,0.08)',
     paddingHorizontal: 10,
     paddingVertical: 7,
     borderRadius: 999,
-    gap: 4,
     borderWidth: 1,
     borderColor: 'rgba(0,229,196,0.12)',
   },
-  timeText: {
+  timePillText: {
     color: FuturisticTheme.colors.text,
     fontFamily: Fonts.sans,
     fontSize: 12,
     fontWeight: '600',
   },
-  nextDose: {
+  metaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 12,
+  },
+  metaChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,229,196,0.08)',
+    gap: 4,
   },
-  nextDoseText: {
-    color: '#fbbf24',
+  metaChipText: {
+    color: FuturisticTheme.colors.tint,
     fontFamily: Fonts.sans,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
+  },
+  notes: {
+    marginTop: 10,
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  emptyCard: {
+    alignItems: 'center',
+    gap: 10,
+  },
+  centerState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  emptyTitle: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.mono,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  stateText: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
   },
   fabWrap: {
     position: 'absolute',

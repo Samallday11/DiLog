@@ -1,14 +1,78 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
 import { Fonts, FuturisticTheme } from '@/constants/theme';
 import { FuturisticScreen } from '@/components/ui/futuristic-screen';
 import { GlassCard } from '@/components/ui/glass-card';
 import { HapticPressable } from '@/components/ui/haptic-pressable';
+import {
+  fetchActivityEntries,
+  fetchGlucoseEntries,
+  fetchMedicationEntries,
+} from '@/lib/healthApi';
+import { useAuthStore } from '@/store/authStore';
+
+type RecentLogItem = {
+  id: string;
+  type: 'glucose' | 'medication' | 'activity';
+  label: string;
+  value: string;
+  timestamp: string;
+};
+
+function formatRelativeTime(value: string) {
+  const timestamp = new Date(value).getTime();
+  const diffMinutes = Math.max(0, Math.round((Date.now() - timestamp) / 60000));
+
+  if (diffMinutes < 1) {
+    return 'Now';
+  }
+  if (diffMinutes < 60) {
+    return `${diffMinutes}m ago`;
+  }
+
+  const diffHours = Math.round(diffMinutes / 60);
+  if (diffHours < 24) {
+    return `${diffHours}h ago`;
+  }
+
+  const diffDays = Math.round(diffHours / 24);
+  return `${diffDays}d ago`;
+}
+
+function getRecentLogStyle(type: RecentLogItem['type']) {
+  switch (type) {
+    case 'glucose':
+      return {
+        icon: 'water' as const,
+        color: '#00e5c4',
+        bgColor: 'rgba(0, 229, 196, 0.14)',
+      };
+    case 'medication':
+      return {
+        icon: 'medical' as const,
+        color: '#7dd3fc',
+        bgColor: 'rgba(0, 180, 220, 0.14)',
+      };
+    default:
+      return {
+        icon: 'fitness' as const,
+        color: '#c084fc',
+        bgColor: 'rgba(192, 132, 252, 0.14)',
+      };
+  }
+}
 
 export default function LogScreen() {
   const router = useRouter();
+  const isFocused = useIsFocused();
+  const user = useAuthStore((state) => state.user);
+  const [recentLogs, setRecentLogs] = useState<RecentLogItem[]>([]);
+  const [isLoadingRecentLogs, setIsLoadingRecentLogs] = useState(true);
+  const [recentLogsError, setRecentLogsError] = useState('');
 
   const logOptions = [
     {
@@ -45,6 +109,111 @@ export default function LogScreen() {
     },
   ];
 
+  useEffect(() => {
+    const loadRecentLogs = async () => {
+      if (!user?.id || !isFocused) {
+        setRecentLogs([]);
+        setRecentLogsError('');
+        setIsLoadingRecentLogs(false);
+        return;
+      }
+
+      try {
+        setIsLoadingRecentLogs(true);
+        setRecentLogsError('');
+
+        const [glucoseEntries, medicationEntries, activityEntries] = await Promise.all([
+          fetchGlucoseEntries(user.id),
+          fetchMedicationEntries(user.id),
+          fetchActivityEntries(user.id),
+        ]);
+
+        const mergedLogs: RecentLogItem[] = [
+          ...glucoseEntries.map((entry) => ({
+            id: `glucose-${entry.id}`,
+            type: 'glucose' as const,
+            label: 'Glucose Reading',
+            value: `${Math.round(entry.value)} mg/dL`,
+            timestamp: entry.timestamp,
+          })),
+          ...medicationEntries.map((entry) => ({
+            id: `medication-${entry.id}`,
+            type: 'medication' as const,
+            label: 'Medication',
+            value: entry.medicationName,
+            timestamp: entry.timeTaken,
+          })),
+          ...activityEntries.map((entry) => ({
+            id: `activity-${entry.id}`,
+            type: 'activity' as const,
+            label: 'Activity',
+            value: entry.activityName,
+            timestamp: entry.loggedAt,
+          })),
+        ]
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+          .slice(0, 8);
+
+        setRecentLogs(mergedLogs);
+      } catch (error) {
+        setRecentLogsError(error instanceof Error ? error.message : 'Failed to load recent logs');
+      } finally {
+        setIsLoadingRecentLogs(false);
+      }
+    };
+
+    loadRecentLogs();
+  }, [isFocused, user?.id]);
+
+  const recentLogContent = useMemo(() => {
+    if (isLoadingRecentLogs) {
+      return (
+        <View style={styles.emptyState}>
+          <ActivityIndicator color={FuturisticTheme.colors.tint} />
+        </View>
+      );
+    }
+
+    if (recentLogsError) {
+      return (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateText}>{recentLogsError}</Text>
+        </View>
+      );
+    }
+
+    if (recentLogs.length === 0) {
+      return (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateText}>No recent glucose, medication, or activity logs yet.</Text>
+        </View>
+      );
+    }
+
+    return recentLogs.map((item, index) => {
+      const logStyle = getRecentLogStyle(item.type);
+
+      return (
+        <View key={item.id}>
+          <View style={styles.recentItem}>
+            <View style={styles.recentLeft}>
+              <View style={[styles.recentIcon, { backgroundColor: logStyle.bgColor }]}>
+                <Ionicons name={logStyle.icon} size={20} color={logStyle.color} />
+              </View>
+              <View>
+                <Text style={styles.recentLabel}>{item.label}</Text>
+                <Text style={styles.recentValue}>{item.value}</Text>
+              </View>
+            </View>
+            <Text style={styles.recentTime}>{formatRelativeTime(item.timestamp)}</Text>
+          </View>
+
+          {index < recentLogs.length - 1 ? <View style={styles.divider} /> : null}
+        </View>
+      );
+    });
+  }, [isLoadingRecentLogs, recentLogs, recentLogsError]);
+
   return (
     <FuturisticScreen scrollable contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
@@ -74,50 +243,7 @@ export default function LogScreen() {
       <View style={styles.recentSection}>
         <Text style={styles.recentTitle}>Recent Logs</Text>
 
-        <GlassCard style={styles.recentCard}>
-          <View style={styles.recentItem}>
-            <View style={styles.recentLeft}>
-              <View style={[styles.recentIcon, { backgroundColor: 'rgba(0, 229, 196, 0.14)' }]}>
-                <Ionicons name="water" size={20} color="#00e5c4" />
-              </View>
-              <View>
-                <Text style={styles.recentLabel}>Glucose Reading</Text>
-                <Text style={styles.recentValue}>110 mg/dL</Text>
-              </View>
-            </View>
-            <Text style={styles.recentTime}>2h ago</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.recentItem}>
-            <View style={styles.recentLeft}>
-              <View style={[styles.recentIcon, { backgroundColor: 'rgba(245, 158, 11, 0.14)' }]}>
-                <Ionicons name="restaurant" size={20} color="#f59e0b" />
-              </View>
-              <View>
-                <Text style={styles.recentLabel}>Breakfast</Text>
-                <Text style={styles.recentValue}>Oatmeal with berries</Text>
-              </View>
-            </View>
-            <Text style={styles.recentTime}>3h ago</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.recentItem}>
-            <View style={styles.recentLeft}>
-              <View style={[styles.recentIcon, { backgroundColor: 'rgba(0, 180, 220, 0.14)' }]}>
-                <Ionicons name="medical" size={20} color="#7dd3fc" />
-              </View>
-              <View>
-                <Text style={styles.recentLabel}>Medication</Text>
-                <Text style={styles.recentValue}>Morning Insulin</Text>
-              </View>
-            </View>
-            <Text style={styles.recentTime}>5h ago</Text>
-          </View>
-        </GlassCard>
+        <GlassCard style={styles.recentCard}>{recentLogContent}</GlassCard>
       </View>
     </FuturisticScreen>
   );
@@ -232,5 +358,17 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: 'rgba(0, 229, 196, 0.08)',
     marginLeft: 54,
+  },
+  emptyState: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyStateText: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
   },
 });
