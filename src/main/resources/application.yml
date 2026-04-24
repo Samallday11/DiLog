@@ -38,6 +38,8 @@ app:
   jwt:
     secret: 6M3+6fXQ3gT6bU4qfF+5oL0m9kWj2b0d7Aq1uN8sP4rY2vH5xC9tL1zE6nM3qR7s
     expiration-ms: 86400000
+  ai:
+    base-url: http://localhost:8000
 
 logging:
   level:

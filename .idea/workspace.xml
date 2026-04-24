@@ -6,19 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="dfca2d6f-7f47-4e14-a7dd-9733c77aa630" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/home.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/log.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/log.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/activity/history.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/activity/history.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/activity/log-activity.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/activity/log-activity.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/glucose/history.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/glucose/history.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/medication/add-medication.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/medication/add-medication.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/medication/list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/medication/list.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/lib/healthApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/lib/healthApi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dilog/backend/config/DatabaseCompatibilityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dilog/backend/config/DatabaseCompatibilityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dilog/backend/repository/GlucoseEntryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dilog/backend/repository/GlucoseEntryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dilog/backend/service/GlucoseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dilog/backend/service/GlucoseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/schema.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/ai-chat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/ai-chat.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

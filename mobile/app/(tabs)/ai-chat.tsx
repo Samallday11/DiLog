@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -10,11 +11,18 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { BlinkIndicator, PulseHalo } from '@/components/ui/animated-metrics';
 import { FuturisticScreen } from '@/components/ui/futuristic-screen';
 import { GlassCard } from '@/components/ui/glass-card';
 import { HapticPressable } from '@/components/ui/haptic-pressable';
-import { BlinkIndicator, PulseHalo } from '@/components/ui/animated-metrics';
+import { Fonts, FuturisticTheme } from '@/constants/theme';
+import { fetchAiInsight, sendAiChat } from '@/lib/aiApi';
+import {
+  fetchActivityEntries,
+  fetchGlucoseEntries,
+  fetchMedicationEntries,
+} from '@/lib/healthApi';
+import { useAuthStore } from '@/store/authStore';
 
 interface Message {
   id: string;
@@ -23,39 +31,137 @@ interface Message {
   timestamp: Date;
 }
 
+interface InsightInputSummary {
+  glucose?: number;
+  activity?: string;
+  medication?: string;
+}
+
+const DISCLAIMER =
+  'AI can make mistakes and is not a medical professional. Always consult a healthcare provider for medical advice.';
+
+async function buildInsightFromLatestData(userId: number) {
+  const [glucoseEntries, activityEntries, medicationEntries] = await Promise.all([
+    fetchGlucoseEntries(userId),
+    fetchActivityEntries(userId),
+    fetchMedicationEntries(userId),
+  ]);
+
+  const payload = {
+    glucose: glucoseEntries[0]?.value,
+    activity: activityEntries[0]?.activityName,
+    medication: medicationEntries[0]?.medicationName,
+  };
+
+  const response = await fetchAiInsight(payload);
+  return { payload, insight: response.insight };
+}
+
 export default function AIChatScreen() {
+  const userId = useAuthStore((state) => state.user?.id);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm your AI health assistant. I can help you with meal recommendations, analyze your glucose patterns, and answer questions about diabetes management. How can I help you today?",
+      text: "Hi! I'm your local AI assistant. I can chat with you and generate a short insight from your latest logged health data.",
       isUser: false,
       timestamp: new Date(),
     },
   ]);
   const [inputText, setInputText] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [insight, setInsight] = useState('');
+  const [insightInputs, setInsightInputs] = useState<InsightInputSummary>({});
+  const [isInsightLoading, setIsInsightLoading] = useState(false);
+  const [screenError, setScreenError] = useState<string | null>(null);
 
-  const sendMessage = () => {
-    if (inputText.trim() === '') return;
+  const generateInsight = async (targetUserId = userId) => {
+    if (!targetUserId) {
+      return;
+    }
+
+    setIsInsightLoading(true);
+    setScreenError(null);
+
+    try {
+      const result = await buildInsightFromLatestData(targetUserId);
+      setInsightInputs(result.payload);
+      setInsight(result.insight);
+    } catch (error) {
+      setScreenError(error instanceof Error ? error.message : 'Unable to load AI insight right now.');
+    } finally {
+      setIsInsightLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const loadInsight = async () => {
+      setIsInsightLoading(true);
+      setScreenError(null);
+
+      try {
+        const result = await buildInsightFromLatestData(userId);
+        if (!isMounted) {
+          return;
+        }
+        setInsightInputs(result.payload);
+        setInsight(result.insight);
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+        setScreenError(error instanceof Error ? error.message : 'Unable to load AI insight right now.');
+      } finally {
+        if (isMounted) {
+          setIsInsightLoading(false);
+        }
+      }
+    };
+
+    void loadInsight();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId]);
+
+  const sendMessage = async () => {
+    const trimmedMessage = inputText.trim();
+    if (trimmedMessage === '' || isSending) {
+      return;
+    }
 
     const newMessage: Message = {
       id: Date.now().toString(),
-      text: inputText,
+      text: trimmedMessage,
       isUser: true,
       timestamp: new Date(),
     };
 
-    setMessages([...messages, newMessage]);
+    setMessages((prev) => [...prev, newMessage]);
     setInputText('');
+    setIsSending(true);
+    setScreenError(null);
 
-    setTimeout(() => {
+    try {
+      const response = await sendAiChat(trimmedMessage);
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Based on your recent glucose readings, I recommend meals high in fiber and protein. Would you like specific meal suggestions for breakfast, lunch, or dinner?',
+        text: response.reply,
         isUser: false,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiResponse]);
-    }, 1000);
+    } catch (error) {
+      setScreenError(error instanceof Error ? error.message : 'Unable to reach the AI service right now.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const quickPrompts = [
@@ -64,6 +170,12 @@ export default function AIChatScreen() {
     'Snack ideas',
     'Exercise tips',
   ];
+
+  const latestDataSummary = [
+    insightInputs.glucose != null ? `${insightInputs.glucose} mg/dL glucose` : 'No glucose logged',
+    insightInputs.activity ? `${insightInputs.activity} activity` : 'No activity logged',
+    insightInputs.medication ? `${insightInputs.medication} medication` : 'No medication logged',
+  ].join(' | ');
 
   const renderMessage = ({ item }: { item: Message }) => (
     <View
@@ -121,7 +233,7 @@ export default function AIChatScreen() {
               <Text style={styles.headerTitle}>AI Health Assistant</Text>
               <View style={styles.statusIndicator}>
                 <BlinkIndicator style={styles.onlineDot} />
-                <Text style={styles.statusText}>Online</Text>
+                <Text style={styles.statusText}>Local GPT-2</Text>
               </View>
             </View>
           </View>
@@ -133,14 +245,48 @@ export default function AIChatScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.messagesList}
           showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <View style={styles.topPanels}>
+              <GlassCard style={styles.disclaimerCard}>
+                <Text style={styles.disclaimerLabel}>Safety Notice</Text>
+                <Text style={styles.disclaimerText}>{DISCLAIMER}</Text>
+              </GlassCard>
+
+              <GlassCard style={styles.insightCard}>
+                <View style={styles.insightHeader}>
+                  <View style={styles.insightHeaderText}>
+                    <Text style={styles.insightLabel}>AI Insight</Text>
+                    <Text style={styles.insightMeta}>{latestDataSummary}</Text>
+                  </View>
+                  <HapticPressable onPress={() => void generateInsight()} disabled={isInsightLoading}>
+                    <View style={styles.refreshButton}>
+                      {isInsightLoading ? (
+                        <ActivityIndicator size="small" color={FuturisticTheme.colors.tint} />
+                      ) : (
+                        <Ionicons name="refresh" size={18} color={FuturisticTheme.colors.tint} />
+                      )}
+                    </View>
+                  </HapticPressable>
+                </View>
+
+                <Text style={styles.insightText}>
+                  {isInsightLoading
+                    ? 'Generating a local GPT-2 insight from your latest health logs...'
+                    : insight || 'Tap refresh to generate an insight from your latest glucose, activity, and medication entries.'}
+                </Text>
+              </GlassCard>
+
+              {screenError ? <Text style={styles.errorText}>{screenError}</Text> : null}
+            </View>
+          }
         />
 
         {messages.length === 1 && (
           <View style={styles.quickPromptsContainer}>
             <Text style={styles.quickPromptsTitle}>Quick prompts</Text>
             <View style={styles.quickPrompts}>
-              {quickPrompts.map((prompt, index) => (
-                <HapticPressable key={index} onPress={() => setInputText(prompt)}>
+              {quickPrompts.map((prompt) => (
+                <HapticPressable key={prompt} onPress={() => setInputText(prompt)}>
                   <View style={styles.quickPrompt}>
                     <Text style={styles.quickPromptText}>{prompt}</Text>
                   </View>
@@ -154,7 +300,7 @@ export default function AIChatScreen() {
           <GlassCard style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
-              placeholder="Ask me anything about your health..."
+              placeholder="Ask the local GPT-2 assistant..."
               placeholderTextColor={FuturisticTheme.colors.muted}
               value={inputText}
               onChangeText={setInputText}
@@ -164,22 +310,26 @@ export default function AIChatScreen() {
             <HapticPressable
               style={[
                 styles.sendButtonWrap,
-                inputText.trim() === '' && styles.sendButtonWrapDisabled,
+                (inputText.trim() === '' || isSending) && styles.sendButtonWrapDisabled,
               ]}
-              onPress={sendMessage}
-              disabled={inputText.trim() === ''}
+              onPress={() => void sendMessage()}
+              disabled={inputText.trim() === '' || isSending}
             >
               <View
                 style={[
                   styles.sendButton,
-                  inputText.trim() === '' && styles.sendButtonDisabled,
+                  (inputText.trim() === '' || isSending) && styles.sendButtonDisabled,
                 ]}
               >
-                <Ionicons
-                  name="send"
-                  size={18}
-                  color={inputText.trim() === '' ? FuturisticTheme.colors.muted : '#02161b'}
-                />
+                {isSending ? (
+                  <ActivityIndicator size="small" color={FuturisticTheme.colors.muted} />
+                ) : (
+                  <Ionicons
+                    name="send"
+                    size={18}
+                    color={inputText.trim() === '' ? FuturisticTheme.colors.muted : '#02161b'}
+                  />
+                )}
               </View>
             </HapticPressable>
           </GlassCard>
@@ -244,6 +394,76 @@ const styles = StyleSheet.create({
   messagesList: {
     padding: 16,
     paddingBottom: 8,
+  },
+  topPanels: {
+    gap: 12,
+    marginBottom: 14,
+  },
+  disclaimerCard: {
+    borderColor: 'rgba(255, 95, 122, 0.2)',
+    backgroundColor: 'rgba(36, 10, 16, 0.72)',
+  },
+  disclaimerLabel: {
+    color: '#ff9aaa',
+    fontFamily: Fonts.mono,
+    fontSize: 11,
+    letterSpacing: 1.7,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  disclaimerText: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  insightCard: {
+    gap: 12,
+  },
+  insightHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  insightHeaderText: {
+    flex: 1,
+  },
+  insightLabel: {
+    color: FuturisticTheme.colors.tint,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
+    marginBottom: 6,
+  },
+  insightMeta: {
+    color: FuturisticTheme.colors.muted,
+    fontFamily: Fonts.sans,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  refreshButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 1,
+    borderColor: FuturisticTheme.colors.border,
+    backgroundColor: 'rgba(0, 229, 196, 0.08)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  insightText: {
+    color: FuturisticTheme.colors.text,
+    fontFamily: Fonts.sans,
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  errorText: {
+    color: FuturisticTheme.colors.danger,
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
   },
   messageContainer: {
     flexDirection: 'row',
