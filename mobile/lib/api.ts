@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 
 function getDefaultBaseUrl() {
   if (Platform.OS === 'web') {
-    return 'http://localhost:8080/api';
+    return 'https://dilog-production.up.railway.app/api';
   }
 
   const hostUri = Constants.expoConfig?.hostUri ?? '';
@@ -18,7 +18,7 @@ function getDefaultBaseUrl() {
     return 'http://10.0.2.2:8080/api';
   }
 
-  return 'http://localhost:8080/api';
+  return 'https://dilog-production.up.railway.app/api';
 }
 
 export const API_BASE_URL =
