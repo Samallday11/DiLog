@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="dfca2d6f-7f47-4e14-a7dd-9733c77aa630" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mobile/app/(tabs)/ai-chat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/mobile/app/(tabs)/ai-chat.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
